@@ -24,7 +24,9 @@ $(document).ready(main);
 /** adds event listeners to the address submittal buttons, as well as the get travel time button */
 function addLocationButtonEventListeners() {
     // Upon button click, store new address. Set query url to the address. Make the ajax call for that address.
-    $("#start-btn").on("click", function(event) {
+
+
+    $("#submitaddress").on("click", function(event) {
         event.preventDefault()
         address = $("#address").val();
         zip = $("#zip").val();
@@ -39,7 +41,7 @@ function addLocationButtonEventListeners() {
     });
 
     // Button for end location address. Set query url to the address. Make the ajax call for that address.
-    $("#end-btn").on("click", function(event) {
+    $("#submitfinaladdress").on("click", function(event) {
         event.preventDefault()
         address = $("#end-address").val();
         zip = $("#end-zip").val();
@@ -215,7 +217,7 @@ function getStoredLatLong() {
 }
 
 
-function getDirections(startLatLong, endLatLong) {
+function getDistance(startLatLong, endLatLong) {
     startLatLong;
     endLatLong;
 
@@ -224,11 +226,6 @@ function getDirections(startLatLong, endLatLong) {
         method: "GET"
     }).then(function(response) {
         console.log(response);
-        console.log(response);
-        console.log(`destination ${DEST} is ${response.destination_addresses[DEST]}`);
-        console.log("distance to " + response.destination_addresses[DEST] + " is " + response.rows[0].elements[DEST].distance.text);
-        console.log("number of destinations is " + response.destination_addresses.length);
-        console.log("origin address is " + response.origin_addresses[0]);
-        console.log(`duration to destination ${DEST} is ${response.rows[0].elements[DEST].duration.text}`);
+        
     });
 }

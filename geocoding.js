@@ -61,9 +61,9 @@ function addLocationButtonEventListeners() {
     })
 }
 
-makeCall().then(function() {
-    ;
-})
+// makeCall().then(function() {
+//     ;
+// })
 // Need to make sure data from promise exists before using it!
 // if(!data) return console.log("no data exists")
 

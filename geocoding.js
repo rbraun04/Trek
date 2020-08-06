@@ -65,7 +65,7 @@ makeCall().then(function() {
     ;
 })
 // Need to make sure data from promise exists before using it!
-if(!data) return console.log("no data exists")
+// if(!data) return console.log("no data exists")
 
 /** Makes ajax call to convert an address to latitude/longitude */
 function makeCall() {

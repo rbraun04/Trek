@@ -8,7 +8,7 @@ var startLatLong; // latitude and longitude calculated upon submittal of address
 var endLatLong;   // put into local storage? 
 var startAddress = true;
 
-const APIKEY = "null"; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
+const APIKEY = "AIzaSyC4PdU4Cj3uxCX3ocD5Z_c5b_3lFIM9qL0"; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
 
 /** Main controller function. Gets stored addresses and puts them into input fields.
  * Then adds event listeners to the address submittal buttons. */
@@ -32,7 +32,7 @@ function addLocationButtonEventListeners() {
         state = $("#state").val();
         localStorage.setItem("startAddressObj", JSON.stringify({address, zip, city, state}));
         // this also works without the zip field
-        queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
+        queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
         startAddress = true;
         makeCall();
@@ -47,9 +47,13 @@ function addLocationButtonEventListeners() {
         state = $("#end-state").val();
         localStorage.setItem("endAddressObj", JSON.stringify({address, zip, city, state}));
         // this also works without the zip field
-        queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
+        queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         startAddress = false;
-        makeCall();
+        var lat = makeCall();
+        // makeCall().then(function(result) {
+        //     endLatLong = latLongObj;
+        //     localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
+        // });
     });
 
     $("#travel-time").on("click", function(event) {
@@ -57,6 +61,11 @@ function addLocationButtonEventListeners() {
     })
 }
 
+makeCall().then(function() {
+    ;
+})
+// Need to make sure data from promise exists before using it!
+if(!data) return console.log("no data exists")
 
 /** Makes ajax call to convert an address to latitude/longitude */
 function makeCall() {
@@ -85,6 +94,15 @@ function makeCall() {
             endLatLong = latLongObj;
             localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
         }
+
+        // Can just chain ajax calls together to use values from the previous ajax call
+        // const someurl = "jdsfdshgfkjds" + lat + long
+        // $.ajax({
+        //     url: someurl,
+        //     method: "GET"
+        // }).then(function(x) {
+            
+        // })
     });
 }
 
@@ -94,7 +112,7 @@ function getTravelTime(startLatLong, endLatLong) {
 
     // defaulting to imperial units
     var exampleURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592&key=" + APIKEY;
-    var queryURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
+    var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
 
     // // travel mode is driving by default
     // var otherTravelMode = false;
@@ -194,4 +212,23 @@ function getEndAddress() {
 function getStoredLatLong() {
     startLatLong = JSON.parse(localStorage.getItem("startLatLong"));
     endLatLong = JSON.parse(localStorage.getItem("endLatLong"));
+}
+
+
+function getDirections(startLatLong, endLatLong) {
+    startLatLong;
+    endLatLong;
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function(response) {
+        console.log(response);
+        console.log(response);
+        console.log(`destination ${DEST} is ${response.destination_addresses[DEST]}`);
+        console.log("distance to " + response.destination_addresses[DEST] + " is " + response.rows[0].elements[DEST].distance.text);
+        console.log("number of destinations is " + response.destination_addresses.length);
+        console.log("origin address is " + response.origin_addresses[0]);
+        console.log(`duration to destination ${DEST} is ${response.rows[0].elements[DEST].duration.text}`);
+    });
 }

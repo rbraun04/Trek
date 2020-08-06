@@ -14,6 +14,7 @@ var startAddress = true;
 function main() {
     getStartAddress();
     getEndAddress();
+    getStoredLatLong();
     addLocationButtonEventListeners();
 }
 $(document).ready(main);
@@ -51,7 +52,7 @@ function addLocationButtonEventListeners() {
     });
 
     $("#travel-time").on("click", function(event) {
-        $("#travel-time-para").text(getTravelTime(startLatLong, endLatLong));
+        getTravelTime(startLatLong, endLatLong);
     })
 }
 
@@ -77,9 +78,11 @@ function makeCall() {
 
         if (startAddress) {
             startLatLong = latLongObj;
+            localStorage.setItem("startLatLong", JSON.stringify(startLatLong));
         }
         else {
             endLatLong = latLongObj;
+            localStorage.setItem("endLatLong", JSON,stringify(endLatLong));
         }
     });
 }
@@ -174,4 +177,10 @@ function getEndAddress() {
     $("#end-zip").val(endZip);
     $("#end-city").val(endCity);
     $("#end-state").val(endState);
+}
+
+/** retrieves last entered latitudes and longitudes from storage. These will be null if nothing is in storage. */
+function getStoredLatLong() {
+    startLatLong = JSON.parse(localStorage.getItem("startLatLong"));
+    endLatLong = JSON.parse(localStorage.getItem("endLatLong"));
 }

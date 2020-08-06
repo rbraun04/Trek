@@ -8,6 +8,7 @@ var startLatLong; // latitude and longitude calculated upon submittal of address
 var endLatLong;   // put into local storage? 
 var startAddress = true;
 
+const APIKEY = "null"; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
 
 /** Main controller function. Gets stored addresses and puts them into input fields.
  * Then adds event listeners to the address submittal buttons. */
@@ -31,11 +32,11 @@ function addLocationButtonEventListeners() {
         state = $("#state").val();
         localStorage.setItem("startAddressObj", JSON.stringify({address, zip, city, state}));
         // this also works without the zip field
-        queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=AIzaSyB_ShRmKvw0k00jVd4WofFQVbEtdjV4T0c";
+        queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
         startAddress = true;
         makeCall();
-    });    
+    });
 
     // Button for end location address. Set query url to the address. Make the ajax call for that address.
     $("#end-btn").on("click", function(event) {
@@ -46,7 +47,7 @@ function addLocationButtonEventListeners() {
         state = $("#end-state").val();
         localStorage.setItem("endAddressObj", JSON.stringify({address, zip, city, state}));
         // this also works without the zip field
-        queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=AIzaSyB_ShRmKvw0k00jVd4WofFQVbEtdjV4T0c";
+        queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         startAddress = false;
         makeCall();
     });
@@ -82,7 +83,7 @@ function makeCall() {
         }
         else {
             endLatLong = latLongObj;
-            localStorage.setItem("endLatLong", JSON,stringify(endLatLong));
+            localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
         }
     });
 }
@@ -91,10 +92,34 @@ function makeCall() {
 /** After both start and end addresses have been submitted, can calculate the distance and travel time between them. */
 function getTravelTime(startLatLong, endLatLong) {
 
-    var exampleURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592&key=AIzaSyB_ShRmKvw0k00jVd4WofFQVbEtdjV4T0c"
     // defaulting to imperial units
-    var queryURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude + "&key=AIzaSyB_ShRmKvw0k00jVd4WofFQVbEtdjV4T0c"
-    
+    var exampleURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592&key=" + APIKEY;
+    var queryURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
+
+    // // travel mode is driving by default
+    // var otherTravelMode = false;
+    // var transit = false;
+    // var travelMode;
+    // var transit_mode;
+    // // travel mode can be set to these other options:
+    // // mode = transit; transit_mode = bus, subway, train, tram, rail
+    // // mode = driving, walking, bicycling
+
+    // // if not driving, get the mode of travel from user input.
+    // if (otherTravelMode) {
+    //     travelMode = $("#travel-mode").val();
+    //     queryURL += "&mode=" + travelMode
+    //     if (travelMode === "transit") {
+    //         transit = true;
+    //         transit_mode = $("#transit-mode").val();
+    //         queryURL += "&transit_mode=" + transit_mode;
+    //     }
+        
+    // }
+
+    // add the api key
+    queryURL += "&key=" + APIKEY;
+
     // ajax call returns information such as distance and travel time.
     const DEST = 0;
     $.ajax({
@@ -109,20 +134,6 @@ function getTravelTime(startLatLong, endLatLong) {
         console.log("origin address is " + response.origin_addresses[0]);
         console.log(`duration to destination ${DEST} is ${response.rows[0].elements[DEST].duration.text}`);
     });
-    // travel mode is driving by default
-    var otherTravelMode = false;
-    var travelMode;
-    var transit_mode;
-    // travel mode can be set to these other options:
-    // mode = transit; transit_mode = bus, subway, train, tram, rail
-    // mode = driving, walking, bicycling
-    if (otherTravelMode) {
-        travelMode = $("#travel-mode").val();
-        if (travelMode === "transit") {
-            transit_mode = $("transit-mode").val();
-        }
-    }
-
 }
 
 

@@ -8,6 +8,7 @@
 // origins=Bobcaygeon+ON|24+Sussex+Drive+Ottawa+ON
 
 // required parameters: origins, destination, key
+// CORS policy must be dealt with either through a developer plugin, or through use of a proxy server.
 
 $(document).ready(function() {
 
@@ -19,29 +20,29 @@ $(document).ready(function() {
 
     // travel mode is driving by default
     var otherTravelMode = false;
+    var travelMode;
+    var transit_mode;
+    // travel mode can be set to these other options:
     // mode = transit; transit_mode = bus, subway, train, tram, rail
     // mode = driving, walking, bicycling
-
     if (otherTravelMode) {
-        // set other travel mode to whatever user selects.
-        ;
+        travelMode = $("#travel-mode").val();
+        if (travelMode === "transit") {
+            transit_mode = $("transit-mode").val();
+        }
     }
 
-    // CORS policy must be dealt with either through a developer plugin, or through use of a proxy server.
-
-    // ajax call returns infor such as distance and travel time.
+    // ajax call returns information such as distance and travel time.
     const DEST = 0;
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function(response) {
         console.log(response);
-        console.log(`destination ${DEST} is ` + response.destination_addresses[DEST]);
+        console.log(`destination ${DEST} is ${response.destination_addresses[DEST]}`);
         console.log("distance to " + response.destination_addresses[DEST] + " is " + response.rows[0].elements[DEST].distance.text);
         console.log("number of destinations is " + response.destination_addresses.length);
         console.log("origin address is " + response.origin_addresses[0]);
-        console.log(`duration to destination ${DEST} is ` + response.rows[0].elements[DEST].duration.text);
+        console.log(`duration to destination ${DEST} is ${response.rows[0].elements[DEST].duration.text}`);
     });
-
-
 });

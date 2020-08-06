@@ -9,7 +9,18 @@ var exampleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=1600
 
 // Get previously entered address from local storage
 var storedAddress = localStorage.getItem("address");
-storedAddress = JSON.parse(storedAddress);
+if (storedAddress === null) {
+    console.log("null")
+    storedAddress = {
+        address: "",
+        zip: "",
+        city: "",
+        state: ""
+    }
+}
+else {
+    storedAddress = JSON.parse(storedAddress);
+}
 address = storedAddress.address;
 zip = storedAddress.zip;
 city = storedAddress.city;
@@ -22,7 +33,7 @@ $("#city").val(city);
 $("#state").val(state);
 
 // Upon button click, store new address. Set query url to the address. Make the ajax call for that address.
-$("button").on("click", function(event) {
+$("#start-btn").on("click", function(event) {
     event.preventDefault()
     address = $("#address").val();
     zip = $("#zip").val();
@@ -44,6 +55,39 @@ function makeCall() {
         console.log(response);
         console.log("latitude is " + response.results[0].geometry.location.lat)
         console.log("longitude is " + response.results[0].geometry.location.lng)
-
     });
 }
+
+
+
+// get end location address from storage
+var storedEndAddress = localStorage.getItem("storedEndAddress");
+if (storedEndAddress === null) {
+    storedEndAddress= {
+        address: "",
+        zip: "",
+        city: "",
+        state: ""
+    }
+}
+else {
+    storedEndAddress = JSON.parse(storedEndAddress);
+}
+endAddress = storedEndAddress.address;
+endZip = storedEndAddress.zip;
+endCity = storedEndAddress.city;
+endState = storedEndAddress.state;
+
+// Button for end location address. Set query url to the address. Make the ajax call for that address.
+$("#end-btn").on("click", function(event) {
+    event.preventDefault()
+    address = $("#end-address").val();
+    zip = $("#end-zip").val();
+    city = $("#end-city").val();
+    state = $("#end-state").val();
+    console.log(address, zip, city, state);
+    localStorage.setItem("address", JSON.stringify({address, zip, city, state}));
+    // this also works without the zip field
+    queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=AIzaSyB_ShRmKvw0k00jVd4WofFQVbEtdjV4T0c";
+    makeCall();
+});    

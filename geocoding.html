@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
+  <script defer src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/js/bootstrap.min.js" integrity="sha384-XEerZL0cuoUbHE4nZReLT7nx9gQrQreJekYhJD9WNWhH8nEW+0c5qq7aIo2Wl30J" crossorigin="anonymous"></script>
+  <script defer src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+  <script defer src="geocoding.js"></script>
+
+  <title>Geocoding</title>
+
+</head>
+<body>
+  <!-- Converts addresses to latitude /longitude, and vice versa -->
+  <h1>Code for converting address to latitude / longitude (See console)</h1>
+
+  <form>
+    <div class="form-group">
+      <label for="address">Address</label>
+      <input type="text" class="form-control" id="address" aria-describedby="Address">
+    </div>
+    <div class="form-group">
+      <label for="zip">zip</label>
+      <input type="text" class="form-control" id="zip" aria-describedby="zip">
+    </div>
+    <div class="form-group">
+      <label for="city">city</label>
+      <input type="text" class="form-control" id="city" aria-describedby="city">
+    </div>
+    <div class="form-group">
+      <label for="state">state</label>
+      <input type="text" class="form-control" id="state" aria-describedby="state">
+    </div>
+    <button type="submit" class="btn btn-primary" id="start-btn">Submit</button>
+  </form>
+
+
+  <form>
+    <div class="form-group">
+      <label for="end-address">end-address</label>
+      <input type="text" class="form-control" id="end-address" aria-describedby="end-address">
+    </div>
+    <div class="form-group">
+      <label for="end-zip">end-zip</label>
+      <input type="text" class="form-control" id="end-zip" aria-describedby="end-zip">
+    </div>
+    <div class="form-group">
+      <label for="end-city">end-city</label>
+      <input type="text" class="form-control" id="end-city" aria-describedby="end-city">
+    </div>
+    <div class="form-group">
+      <label for="end-state">end-state</label>
+      <input type="text" class="form-control" id="end-state" aria-describedby="end-state">
+    </div>
+    <button type="submit" class="btn btn-primary" id="end-btn">Submit</button>
+  </form>
+
+
+  <button id="travel-time">Get travel time</button>
+
+  <h1>Remember to toggle CORS policy for security</h1>
+
+
+</body>
+</html>

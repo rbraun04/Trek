@@ -8,3 +8,7 @@
 4.	Meetup api = > find concerts, events, etc. upon reaching a new city. Combine with google maps api for directions, travel time. Provide pictures based upon event that user wants to go to?
 
 5.	Find artist info through social media APIs – Instagram, facebook, etc. 
+
+
+2 server side API's = 
+1 

@@ -17,7 +17,7 @@
 
 <body>
 
-    <div class="container-fluid">
+<div class="container-fluid">
 
         <div class="navbar">
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -25,62 +25,64 @@
                     <a class="navbar-brand" href="portfolio.html">Our Philosophy</a>
                     <a class="navbar-brand" href="contact.html">Resources</a>
                 </div>
-        </div>
+            </div>
             <nav class="navbar navbar-expand-l navbar-light bg-light bg-transparent">
                 <div class="col-md-6">
-                    <div class="header">
-                    </div>
+                    <div class="header"></div>
                 </div>    
                 <div class="col-md-6">
                         <button class="navbar-toggler1 navbar-toggler-right border rounded border-secondary" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                              <span class="navbar-toggler-icon"></span>
                         </button>
-                    </div>
-                    
-                    
-                
+                </div>   
             </nav>
         </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-2"></div>
-        
-        <div class="col-md-8">
-            <div class="firstQuestions">
-                    <div class="form-group rounded firstQuestions">
-                      <label for="hike">Go on a hike?</label>
-                      <select class="form-control" id="hike" >
-                        <option>Yes</option>
-                        <option>No</option>
+    <div class="container rounded  hikeQuestions">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="">
+                    <div class="form-group rounded hikeQuestions" >
+                      <label for="difficulty">What type of trail?</label>
+                      <select id = "typetrail" class="form-control" id="difficulty">
+                        <option>Narrow Trail/ Singletrack</option>
+                        <option>Wide-Trail / Doubletrack</option>
+                        <option>Paved path</option>
                       </select>
                     </div>
-                    <div class="form-group rounded firstQuestions" >
-                      <label for="difficulty">What level of difficulty?</label>
-                      <select class="form-control" id="difficulty">
-                        <option>Yes</option>
-                        <option>No</option>
-                      </select>
+                    <div class="form-group rounded hikeQuestions" >
+                        <label for="distance">Level of difficulty?</label>
+                        <select id="distance" class="form-control" id="distance">
+                          <option>Easy</option>
+                          <option>Easy/Intermediate</option>
+                          <option>Intermediate</option>
+                          <option>Difficult</option>
+                          <option>Very Difficult</option>
+                        </select>
                     </div>
-                    <div class="form-group rounded firstQuestions" >
+                    <div class="form-group rounded hikeQuestions" >
                         <label for="distance">How far away?</label>
-                        <select class="form-control" id="distance">
+                        <select id="distance" class="form-control" id="distance">
                           <option>Within 5 Miles</option>
                           <option>Within 10 miles</option>
                           <option>Within 25 miles</option>
                           <option>Within 50 miles</option>
                           <option>Within 100 miles</option>
                         </select>
-                      </div>
-                      
-                  </form>
-                  <a type="submit" class="btn btn-dark" href="TrekHikeResult.html" id="submitfinaladdress">Submit</button>
-                <a type="submit" class="btn btn-dark" href="TrekStartYelpQuestions.html" id="skipfinaladddress">Skip</button>
+                    </div>
+                <div class="row">
+                    <div class="col-md-1"></div> 
+                    <div class="col-md-9"> 
+                    <a type="submit" class="btn btn-dark hikesubmitQuestions" href="TrekHikeResult.html" id="submitfinaladdress">Submit</a>
+                    </div>  
+                    <div class="col-md-1"></div>  
             </div>
+            </div>
+            <div class="col-md-2"></div>
         </div>
-        <div class="col-md-"></div>
     </div>  
-<footer>
+    <footer>
     <nav class="navbar mx-auto fixed-bottom navbar-light bg-transparent" style="width: 200px;";>
         <a class="navbar-brand" href="#">
             <div class="footer-text">
@@ -91,7 +93,7 @@
         </a>
     </nav>
 
-</footer>
+    </footer>
 
 </div> 
 

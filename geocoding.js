@@ -274,6 +274,7 @@ function addLocationButtonEventListeners() {
         queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         startAddress = false;
         var lat = makeCall();
+        location.href="TrekStartHikeQuestions.html";
         // makeCall().then(function(result) {
         //     endLatLong = latLongObj;
         //     localStorage.setItem("endLatLong", JSON.stringify(endLatLong));

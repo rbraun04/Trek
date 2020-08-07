@@ -234,8 +234,15 @@ function embedMap(startLatLong, endLatLong) {
     // });
 }
 
-
-
+/** Stores an address in local storage.
+ * @param keyName {string} : the name of the local storage key for the object */
+function storeAddress(keyName) {
+    address = $("#address").val();
+    zip = $("#zip").val();
+    city = $("#city").val();
+    state = $("#state").val();
+    localStorage.setItem(keyName, JSON.stringify({address, zip, city, state}));
+}
 
 
 
@@ -246,11 +253,7 @@ function addLocationButtonEventListeners() {
 
     $("#submitaddress").on("click", function(event) {
         event.preventDefault()
-        address = $("#address").val();
-        zip = $("#zip").val();
-        city = $("#city").val();
-        state = $("#state").val();
-        localStorage.setItem("startAddressObj", JSON.stringify({address, zip, city, state}));
+        storeAddress("startAddressObj")
         // this also works without the zip field
         queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag

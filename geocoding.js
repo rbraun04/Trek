@@ -8,7 +8,7 @@ var startLatLong; // latitude and longitude calculated upon submittal of address
 var endLatLong;   // put into local storage? 
 var startAddress = true;
 
-const APIKEY = ""; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
+const APIKEY = "AIzaSyC4PdU4Cj3uxCX3ocD5Z_c5b_3lFIM9qL0"; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
 
 /** Main controller function. Gets stored addresses and puts them into input fields.
  * Then adds event listeners to the address submittal buttons. */

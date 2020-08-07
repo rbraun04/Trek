@@ -58,9 +58,15 @@ function addLocationButtonEventListeners() {
         // });
     });
 
+    // button that returns distance and travel time on click
     $("#travel-time").on("click", function(event) {
         getTravelTime(startLatLong, endLatLong);
     })
+
+    // button that returns directions on click
+    $("#get-directions").on("click", function() {
+        getDirections(startLatLong, endLatLong);
+    });
 }
 
 // makeCall().then(function() {
@@ -114,8 +120,7 @@ function getTravelTime(startLatLong, endLatLong) {
 
     // defaulting to imperial units
     var exampleURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592&key=" + APIKEY;
-    var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
-
+    
     // // travel mode is driving by default
     // var otherTravelMode = false;
     // var transit = false;
@@ -127,16 +132,17 @@ function getTravelTime(startLatLong, endLatLong) {
 
     // // if not driving, get the mode of travel from user input.
     // if (otherTravelMode) {
-    //     travelMode = $("#travel-mode").val();
+        //     travelMode = $("#travel-mode").val();
     //     queryURL += "&mode=" + travelMode
     //     if (travelMode === "transit") {
     //         transit = true;
     //         transit_mode = $("#transit-mode").val();
     //         queryURL += "&transit_mode=" + transit_mode;
     //     }
-        
+    
     // }
-
+    
+    var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
     // add the api key
     queryURL += "&key=" + APIKEY;
 
@@ -217,15 +223,27 @@ function getStoredLatLong() {
 }
 
 
-function getDistance(startLatLong, endLatLong) {
-    startLatLong;
-    endLatLong;
+function getDirections(startLatLong, endLatLong) {
+    console.log(startLatLong);
+    console.log(endLatLong);
+
+    var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?units=imperial&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destination=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
+    // add the api key
+    queryURL += "&key=" + APIKEY;
 
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function(response) {
         console.log(response);
-        
+        directionsPara = $("#directions");
+        var steps_array = response.routes[0].legs[0].steps
+        for (let i = 0, j = steps_array.length; i < j; i++) {
+            console.log(steps_array[i].html_instructions)
+            let newPara = $("<p>");
+            newPara.html(steps_array[i].html_instructions);
+            directionsPara.append(newPara);
+        }
+
     });
 }

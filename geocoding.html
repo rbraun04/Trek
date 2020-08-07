@@ -35,7 +35,7 @@
       <label for="state">state</label>
       <input type="text" class="form-control" id="state" aria-describedby="state">
     </div>
-    <button type="submit" class="btn btn-primary" id="start-btn">Submit</button>
+    <button type="submit" class="btn btn-primary" id="submitaddress">Submit</button>
   </form>
 
 
@@ -56,13 +56,25 @@
       <label for="end-state">end-state</label>
       <input type="text" class="form-control" id="end-state" aria-describedby="end-state">
     </div>
-    <button type="submit" class="btn btn-primary" id="end-btn">Submit</button>
+    <button type="submit" class="btn btn-primary" id="submitfinaladdress">Submit</button>
   </form>
 
 
   <button id="travel-time">Get travel time</button>
 
+  <button id="get-directions">Get directions</button>
+  <p id="directions"></p>
   <h1>Remember to toggle CORS policy for security</h1>
+
+  <button id="embed-map">Embed map of directions</button>
+  <!-- size of map controlled by iframe's height and width attributes -->
+  <!-- src attribute to be added by javascript -->
+  <iframe
+  id="rendered-map"
+    width="450"
+    height="250"
+    frameborder="0" style="border:0">
+  </iframe>
 
 
 </body>

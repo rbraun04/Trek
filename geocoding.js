@@ -8,7 +8,7 @@ var startLatLong; // latitude and longitude calculated upon submittal of address
 var endLatLong;   // put into local storage? 
 var startAddress = true;
 
-const APIKEY = "AIzaSyC4PdU4Cj3uxCX3ocD5Z_c5b_3lFIM9qL0"; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
+const APIKEY = ""; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
 
 /** Main controller function. Gets stored addresses and puts them into input fields.
  * Then adds event listeners to the address submittal buttons. */
@@ -21,61 +21,8 @@ function main() {
 $(document).ready(main);
 
 
-/** adds event listeners to the address submittal buttons, as well as the get travel time button */
-function addLocationButtonEventListeners() {
-    // Upon button click, store new address. Set query url to the address. Make the ajax call for that address.
 
-
-    $("#submitaddress").on("click", function(event) {
-        event.preventDefault()
-        address = $("#address").val();
-        zip = $("#zip").val();
-        city = $("#city").val();
-        state = $("#state").val();
-        localStorage.setItem("startAddressObj", JSON.stringify({address, zip, city, state}));
-        // this also works without the zip field
-        queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
-        // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
-        startAddress = true;
-        makeCall();
-    });
-
-    // Button for end location address. Set query url to the address. Make the ajax call for that address.
-    $("#submitfinaladdress").on("click", function(event) {
-        event.preventDefault()
-        address = $("#end-address").val();
-        zip = $("#end-zip").val();
-        city = $("#end-city").val();
-        state = $("#end-state").val();
-        localStorage.setItem("endAddressObj", JSON.stringify({address, zip, city, state}));
-        // this also works without the zip field
-        queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
-        startAddress = false;
-        var lat = makeCall();
-        // makeCall().then(function(result) {
-        //     endLatLong = latLongObj;
-        //     localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
-        // });
-    });
-
-    // button that returns distance and travel time on click
-    $("#travel-time").on("click", function(event) {
-        getTravelTime(startLatLong, endLatLong);
-    })
-
-    // button that returns directions on click
-    $("#get-directions").on("click", function() {
-        getDirections(startLatLong, endLatLong);
-    });
-}
-
-// makeCall().then(function() {
-//     ;
-// })
-// Need to make sure data from promise exists before using it!
-// if(!data) return console.log("no data exists")
-
-/** Makes ajax call to convert an address to latitude/longitude */
+/** Converts an address to latitude/longitude using ajax call to geocoding service */
 function makeCall() {
     $.ajax({
         url: queryURL,
@@ -103,6 +50,9 @@ function makeCall() {
             localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
         }
 
+        // Problem: cannot set a variable to makeCall(), because of asynchronous nature. Either must use global variables or promises
+
+        // Possible solutions:
         // Can just chain ajax calls together to use values from the previous ajax call
         // const someurl = "jdsfdshgfkjds" + lat + long
         // $.ajax({
@@ -111,6 +61,13 @@ function makeCall() {
         // }).then(function(x) {
             
         // })
+
+        // OR DO:
+        // makeCall().then(function() {
+        //     ;
+        // })
+        // Need to make sure data from promise exists before using it!
+        // if(!data) return console.log("no data exists")
     });
 }
 
@@ -236,14 +193,101 @@ function getDirections(startLatLong, endLatLong) {
         method: "GET"
     }).then(function(response) {
         console.log(response);
-        directionsPara = $("#directions");
-        var steps_array = response.routes[0].legs[0].steps
-        for (let i = 0, j = steps_array.length; i < j; i++) {
-            console.log(steps_array[i].html_instructions)
-            let newPara = $("<p>");
-            newPara.html(steps_array[i].html_instructions);
-            directionsPara.append(newPara);
+        // Make sure that a valid response is returned
+        if (response.status !== "OK") {
+            console.log("error - directions not found");
+            console.log(response.status);
         }
+        else {
+            directionsPara = $("#directions");
+            var steps_array = response.routes[0].legs[0].steps
+            for (let i = 0, j = steps_array.length; i < j; i++) {
+                console.log(steps_array[i].html_instructions)
+                let newPara = $("<p>");
+                newPara.html(steps_array[i].html_instructions);
+                directionsPara.append(newPara);
+            }
+        }
+    });
+}
 
+function embedMap(startLatLong, endLatLong) {
+    console.log(startLatLong);
+    console.log(endLatLong);
+
+    // request format: https://www.google.com/maps/embed/v1/MODE?key=YOUR_API_KEY&parameters
+    // mode can be place, search, view, direction, or streetview
+    var mode = "directions"
+    // note: dont' use heroku CORS fixer
+    var queryURL = "https://www.google.com/maps/embed/v1/" + mode + "?key=" + APIKEY;
+    // add the api key
+    queryURL += "&origin="  + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destination=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
+
+
+    console.log(queryURL)
+    $("#rendered-map").attr("src", queryURL);
+    // $.ajax({
+    //     url:queryURL,
+    //     method: "GET"
+    // }).then(function(response) {
+    //     console.log(response);
+    // });
+}
+
+
+
+
+
+
+/** adds event listeners to the address submittal buttons, as well as the get travel time button */
+function addLocationButtonEventListeners() {
+    // Upon button click, store new address. Set query url to the address. Make the ajax call for that address.
+
+
+    $("#submitaddress").on("click", function(event) {
+        event.preventDefault()
+        address = $("#address").val();
+        zip = $("#zip").val();
+        city = $("#city").val();
+        state = $("#state").val();
+        localStorage.setItem("startAddressObj", JSON.stringify({address, zip, city, state}));
+        // this also works without the zip field
+        queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
+        // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
+        startAddress = true;
+        makeCall();
+    });
+
+    // Button for end location address. Set query url to the address. Make the ajax call for that address.
+    $("#submitfinaladdress").on("click", function(event) {
+        event.preventDefault()
+        address = $("#end-address").val();
+        zip = $("#end-zip").val();
+        city = $("#end-city").val();
+        state = $("#end-state").val();
+        localStorage.setItem("endAddressObj", JSON.stringify({address, zip, city, state}));
+        // this also works without the zip field
+        queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
+        startAddress = false;
+        var lat = makeCall();
+        // makeCall().then(function(result) {
+        //     endLatLong = latLongObj;
+        //     localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
+        // });
+    });
+
+    // button that returns distance and travel time on click
+    $("#travel-time").on("click", function(event) {
+        getTravelTime(startLatLong, endLatLong);
+    })
+
+    // button that returns directions on click
+    $("#get-directions").on("click", function() {
+        getDirections(startLatLong, endLatLong);
+    });
+
+    // button to embed map
+    $("#embed-map").on("click", function() {
+        embedMap(startLatLong, endLatLong);
     });
 }

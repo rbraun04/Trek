@@ -256,6 +256,7 @@ function addLocationButtonEventListeners() {
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
         startAddress = true;
         makeCall();
+        location.href="TrekFinalAddress.html";
     });
 
     // Button for end location address. Set query url to the address. Make the ajax call for that address.

@@ -5,17 +5,26 @@ var state;
 var queryURL;
 var exampleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyB_ShRmKvw0k00jVd4WofFQVbEtdjV4T0c";
 var startLatLong; // latitude and longitude calculated upon submittal of address
-var endLatLong;   // put into local storage? 
+var endLatLong;   // put into local storage?
 var startAddress = true;
+var goingOnHike = true;
+var goingToRestaurant = true;
 
 const APIKEY = "AIzaSyC4PdU4Cj3uxCX3ocD5Z_c5b_3lFIM9qL0"; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
 
 /** Main controller function. Gets stored addresses and puts them into input fields.
+ * Gets stored coordinates for the hike and restaurant.
+ * Gets stored coordinates for start and end addresses.
  * Then adds event listeners to the address submittal buttons. */
 function main() {
+    // only need to do these for the address pages
     getStartAddress();
     getEndAddress();
+    // only get these next 3 for the final page
+    getHikeAddress();
+    getRestaurantAddress();
     getStoredLatLong();
+    // only need certain buttons
     addLocationButtonEventListeners();
     var mapFrame = $("#journeyrendered-map");
     // render the embedded map, but only if the iframe is present
@@ -26,6 +35,20 @@ function main() {
 $(document).ready(main);
 
 
+//* Retrieves the address of a hike from storage. If null...
+function getHikeAddress() {
+    var hikeAddress = JSON.parse(localStorage.getItem("hikeAddress"));
+    console.log(hikeAddress)
+    if (hikeAddress === null) {
+        goingOnHike = false;
+    }
+    var restaurantAddress =  JSON.parse(localStorage.getItem("restaurantAddress"));
+
+}
+
+function getRestaurantAddress() {
+
+}
 /** Get previously entered start address from local storage */
 function getStartAddress() {
     var storedAddress = localStorage.getItem("startAddressObj");
@@ -228,7 +251,7 @@ function getTravelTime(startLatLong, endLatLong) {
 }
 
 
-/** retrieves last entered latitudes and longitudes from storage. These will be null if nothing is in storage. */
+/** retrieves latitudes and longitudes of the start and end addresses from storage. These will be null if nothing is in storage. */
 function getStoredLatLong() {
     startLatLong = JSON.parse(localStorage.getItem("startLatLong"));
     endLatLong = JSON.parse(localStorage.getItem("endLatLong"));

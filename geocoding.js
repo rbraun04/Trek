@@ -4,11 +4,14 @@ var city;
 var state;
 var queryURL;
 var exampleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyB_ShRmKvw0k00jVd4WofFQVbEtdjV4T0c";
-var startLatLong; // latitude and longitude calculated upon submittal of address
-var endLatLong;   // put into local storage?
+var startLatLong;               // latitude and longitude calculated upon submittal of address
+var hikeLatLong;
+var restaurantLatLong;
+var endLatLong;                 // final addresss location
 var startAddress = true;
 var goingOnHike = true;
 var goingToRestaurant = true;
+var hikeFirst = true            // Set to false if eating first, then hike
 
 const APIKEY = "AIzaSyC4PdU4Cj3uxCX3ocD5Z_c5b_3lFIM9qL0"; // API KEY GOES HERE. THIS SHOULD NOT BE PUBLISHED ON GITHUB!
 
@@ -35,20 +38,21 @@ function main() {
 $(document).ready(main);
 
 
-//* Retrieves the address of a hike from storage. If null...
+//* Retrieves the address of a hike from storage.
 function getHikeAddress() {
-    var hikeAddress = JSON.parse(localStorage.getItem("hikeAddress"));
-    console.log(hikeAddress)
-    if (hikeAddress === null) {
+    hikeLatLong = JSON.parse(localStorage.getItem("hikeAddress"));
+    if (hikeLatLong === null) {
         goingOnHike = false;
     }
-    var restaurantAddress =  JSON.parse(localStorage.getItem("restaurantAddress"));
-
 }
 
 function getRestaurantAddress() {
-
+    restaurantLatLong = JSON.parse(localStorage.getItem("restaurantAddress"));
+    if (restaurantLatLong === null) {
+        goingToRestaurant = false;
+    }
 }
+
 /** Get previously entered start address from local storage */
 function getStartAddress() {
     var storedAddress = localStorage.getItem("startAddressObj");
@@ -294,7 +298,45 @@ function embedMap(startLatLong, endLatLong) {
     var mode = "directions"
     // note: dont' use heroku CORS fixer
     var queryURL = "https://www.google.com/maps/embed/v1/" + mode + "?key=" + APIKEY;
-    queryURL += "&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destination=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
+    queryURL += "&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude 
+
+    // Create an empty array to hold all waypoints, and the final destination, in order. No need to put in start
+    var waypointsArray = [];
+    if (goingOnHike && goingToRestaurant) {
+        if (hikeFirst) {
+            waypointsArray.push(hikeLatLong);
+            waypointsArray.push(restaurantLatLong);
+        }
+        else {
+            waypointsArray.push(restaurantLatLong);
+            waypointsArray.push(hikeLatLong);
+        }
+    }
+    else if (goingOnHike) {
+        waypointsArray.push(hikeLatLong);
+    }
+    else if (goingToRestaurant) {
+        waypointsArray.push(restaurantLatLong);
+    }
+    if (endLatLong !== null) {
+        waypointsArray.push(endLatLong);
+    }
+    if (waypointsArray.length === 0) {
+        console.log("no endpoints set!");
+    }
+    if (waypointsArray.length > 1) {
+        queryURL += "&waypoints=";
+    }
+    while (waypointsArray.length > 0) {
+        if (waypointsArray.length === 1) {
+            queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
+            waypointsArray.shift();
+        }
+        if (waypointsArray.length > 1) {
+            queryURL += waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
+            waypointsArray.shift();
+        }
+    }
 
     // embed the map
     $("#journeyrendered-map").attr("src", queryURL);

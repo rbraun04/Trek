@@ -10,6 +10,7 @@ var restaurantLatLong;          // restaurant location, which is stored in local
 var goingToRestaurant = true;   // global variable that needs to be set on the results page.
 var hikeFirst = true            // Set to false if eating first, then hike. Important for results page.
 var endLatLong;                 // final addresss location. Make sure final results page works even if this is null
+var directionsListPopulated = false;        // set to true once the ajax call has been made and directions dropdown has been populated
 
 const APIKEY = "AIzaSyC4PdU4Cj3uxCX3ocD5Z_c5b_3lFIM9qL0"; // API KEY GOES HERE. THIS SHOULD BE SECURED!
 
@@ -265,6 +266,12 @@ function getTravelTime(startLatLong, endLatLong) {
 
 /** Prints out verbal directions from a start to an end point. Directions are appended onto a div with id='directions' */
 function getDirections(startLatLong, endLatLong) {
+    // this function can only be called once per page:
+    if (directionsListPopulated) {
+        return;
+    }
+    directionsListPopulated = true;
+
     var waypointsArray = populateWaypointsArray();
     var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?units=imperial&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destination=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
     // add the api key
@@ -275,6 +282,8 @@ function getDirections(startLatLong, endLatLong) {
         url: queryURL,
         method: "GET"
     }).then(function(response) {
+        // Remove loading icon once response is successful.
+        $(".spinner-border").attr("style", "display:none");
         // Make sure that a valid response is returned. If not, print an error message.
         if (response.status !== "OK") {
             directionsList = $("#directions");
@@ -367,3 +376,19 @@ function embedMap() {
     // Finally, embed the map.
     $("#journeyrendered-map").attr("src", queryURL);
 }
+
+// TODO:
+/* 
+order directions list
+only call directions service once (and add loading?). also a bug: will keep appending new directions.
+only get variables from local storage on results page
+check on hike and restaurant waypoints
+if no waypoints, then tell user they must select a waypoint (with a modal?)
+improve embed map
+add photos service
+animate directions droplist
+add directions waypoints to query url
+display travel time somewhere?
+organize makeCall()
+general organization
+*/

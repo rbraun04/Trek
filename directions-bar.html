@@ -18,15 +18,18 @@
 
 <!-- copy and paste here -->
 <!-- issue: makes a new call each time button is pressed
-issue: is unordered list only. prob a css property -->
+To make into an ordered list: get rid of the display:block CSS property for .list-group-item -->
   <!-- dropleft button - change to dropright class if needed -->
 <div class="btn-group dropleft">
   <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="get-directions">
     Dropleft
   </button>
   <div class="dropdown-menu">
-    <ul class="list-group" id="directions">
-    </ul>
+    <ol class="list-group" id="directions">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </ol>
   </div>
 </div>
 <!--  end copy and paste here -->

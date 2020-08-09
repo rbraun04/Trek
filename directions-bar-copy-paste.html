@@ -16,20 +16,20 @@
 <body>
 
 
-<!-- copy and paste here -->
-<!-- issue: makes a new call each time button is pressed
-To make into an ordered list: get rid of the display:block CSS property for .list-group-item -->
-  <!-- dropleft button - change to dropright class if needed -->
+<!-- copy and paste starting here -->
+<!-- To make into an ordered list: change to <ol> and get rid of the display:block CSS property for '.list-group-item' -->
+<!-- Right now, .dropleft drops the directions to the left - change dropleft to dropright, dropdown, or dropup class if needed -->
 <div class="btn-group dropleft">
   <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="get-directions">
-    Dropleft
+    Directions
   </button>
   <div class="dropdown-menu">
-    <ol class="list-group" id="directions">
+    <ul class="list-group" id="directions">
       <div class="spinner-border" role="status">
+        <!-- I'm not sure why exactly the screen reader needs to say "loading..." - this is default. - Kevin-->
         <span class="sr-only">Loading...</span>
       </div>
-    </ol>
+    </ul>
   </div>
 </div>
 <!--  end copy and paste here -->

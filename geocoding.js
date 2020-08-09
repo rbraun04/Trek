@@ -31,20 +31,24 @@ function main() {
     getStoredLatLong();
     // only need certain buttons
     addLocationButtonEventListeners();
-    var mapFrame = $("#journeyrendered-map");
+
+    if (goingOnHike === false && goingToRestaurant === false && endLatLong === null) {
+        console.log("There are no waypoints!!")
+    }
+
     // render the embedded map, but only if the iframe is present
-    if (mapFrame !== undefined) {
+    if ($("#journeyrendered-map") !== undefined) {
         embedMap();
     }
 }
+
 $(document).ready(main);
 
-/** Get previously entered start address from local storage */
+/** Get previously entered start address from local storage. Fills out the values of the address form. */
 function getStartAddress() {
-    var storedAddress = localStorage.getItem("startAddressObj");
+    var storedAddress = JSON.parse(localStorage.getItem("startAddressObj"));
     // First check if there is an address in storage.
     if (storedAddress === null) {
-        console.log("null")
         storedAddress = {
             address: "",
             zip: "",
@@ -52,23 +56,20 @@ function getStartAddress() {
             state: ""
         }
     }
-    // If an address is in storage, fill out the values.
-    else {
-        storedAddress = JSON.parse(storedAddress);
-    }
+    // Set global starting address variables.
     address = storedAddress.address;
     zip = storedAddress.zip;
     city = storedAddress.city;
     state = storedAddress.state;
 
-    // Enter stored address into text fields
+    // Enter stored address into text fields.
     $("#address").val(address);
     $("#zip").val(zip);
     $("#city").val(city);
     $("#state").val(state);
 }
 
-/** Get end location address from storage */
+/** Get end location address from storage. Fills out the end address form. */
 function getEndAddress() {
     var storedEndAddress = localStorage.getItem("endAddressObj");
     if (storedEndAddress === null) {
@@ -82,18 +83,14 @@ function getEndAddress() {
     else {
         storedEndAddress = JSON.parse(storedEndAddress);
     }
-    endAddress = storedEndAddress.address;
-    endZip = storedEndAddress.zip;
-    endCity = storedEndAddress.city;
-    endState = storedEndAddress.state;
-
-    $("#end-address").val(endAddress);
-    $("#end-zip").val(endZip);
-    $("#end-city").val(endCity);
-    $("#end-state").val(endState);
+    // Fill out the address form:
+    $("#end-address").val(storedEndAddress.address);
+    $("#end-zip").val(storedEndAddress.zip);
+    $("#end-city").val(storedEndAddress.city);
+    $("#end-state").val(storedEndAddress.state);
 }
 
-//* Retrieves the address of a hike from storage.
+/** Retrieves the address of a hike from storage. */
 function getHikeAddress() {
     hikeLatLong = JSON.parse(localStorage.getItem("hikeAddress"));
     if (hikeLatLong === null) {
@@ -101,6 +98,7 @@ function getHikeAddress() {
     }
 }
 
+/** Retrieves the restaurant address from storage. */
 function getRestaurantAddress() {
     restaurantLatLong = JSON.parse(localStorage.getItem("restaurantAddress"));
     if (restaurantLatLong === null) {
@@ -127,7 +125,7 @@ function addLocationButtonEventListeners() {
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
         startAddress = true;
-        makeCall(queryURL);
+        geocodeAddressUrl(queryURL);
         location.href="TrekFinalAddress.html";
     });
 
@@ -141,9 +139,9 @@ function addLocationButtonEventListeners() {
         localStorage.setItem("endAddressObj", JSON.stringify({address, zip, city, state}));
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         startAddress = false;
-        makeCall(queryURL);
+        geocodeAddressUrl(queryURL);
         location.href="TrekStartHikeQuestions.html";
-        // makeCall().then(function(result) {
+        // geocodeAddressUrl().then(function(result) {
         //     endLatLong = latLongObj;
         //     localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
         // });
@@ -156,7 +154,7 @@ function addLocationButtonEventListeners() {
 
     // button that returns directions on click
     $("#get-directions").on("click", function() {
-        getDirections(startLatLong, endLatLong);
+        getDirections();
     });
 
     // button to embed map
@@ -171,7 +169,7 @@ function addLocationButtonEventListeners() {
 
 /** Converts an address to latitude/longitude using ajax call to geocoding service.
  * Then stores the latitude/longitude in local storage. */
-function makeCall(queryURL) {
+function geocodeAddressUrl(queryURL) {
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -197,52 +195,12 @@ function makeCall(queryURL) {
         }
     });
 }
-        // Problem: cannot set a variable to makeCall(), because of asynchronous nature. Either must use global variables or promises
-        // Possible solutions:
-        // Can just chain ajax calls together to use values from the previous ajax call
-        // const someurl = "jdsfdshgfkjds" + lat + long
-        // $.ajax({
-        //     url: someurl,
-        //     method: "GET"
-        // }).then(function(x) {
-            
-        // })
 
-        // OR DO:
-        // makeCall().then(function() {
-        //     ;
-        // })
-        // Need to make sure data from promise exists before using it!
-        // if(!data) return console.log("no data exists")
 
 
 /** After both start and end addresses have been submitted, can calculate the distance and travel time between them. */
 function getTravelTime(startLatLong, endLatLong) {
 
-    // defaulting to imperial units
-    var exampleURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592&key=" + APIKEY;
-    
-    // // travel mode is driving by default
-    // var otherTravelMode = false;
-    // var transit = false;
-    // var travelMode;
-    // var transit_mode;
-    // // travel mode can be set to these other options:
-    // // mode = transit; transit_mode = bus, subway, train, tram, rail
-    // // mode = driving, walking, bicycling
-
-    // // if not driving, get the mode of travel from user input.
-    // if (otherTravelMode) {
-        //     travelMode = $("#travel-mode").val();
-    //     queryURL += "&mode=" + travelMode
-    //     if (travelMode === "transit") {
-    //         transit = true;
-    //         transit_mode = $("#transit-mode").val();
-    //         queryURL += "&transit_mode=" + transit_mode;
-    //     }
-    
-    // }
-    
     var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
     // add the api key
     queryURL += "&key=" + APIKEY;
@@ -265,19 +223,20 @@ function getTravelTime(startLatLong, endLatLong) {
 
 
 /** Prints out verbal directions from a start to an end point. Directions are appended onto a div with id='directions' */
-function getDirections(startLatLong, endLatLong) {
-    // this function can only be called once per page:
+function getDirections() {
+    // This function can only be called once per page:
     if (directionsListPopulated) {
         return;
     }
     directionsListPopulated = true;
 
-    var waypointsArray = populateWaypointsArray();
-    var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?units=imperial&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destination=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
-    // add the api key
+    // Build query url:
+    var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?units=imperial&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude;
+    queryURL = addWaypointsToQueryURL(queryURL);
     queryURL += "&key=" + APIKEY;
-    var directionsList;
 
+    // Make a call to google directions. Append the result to the list of directions in the html.
+    var directionsList = $("#directions");
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -286,15 +245,13 @@ function getDirections(startLatLong, endLatLong) {
         $(".spinner-border").attr("style", "display:none");
         // Make sure that a valid response is returned. If not, print an error message.
         if (response.status !== "OK") {
-            directionsList = $("#directions");
             let newli = $("<li>");
             newli.attr("class", "list-group-item");
             newli.text("Error - directions cannot be found.");
             directionsList.append(newli);
         }
-        // Append response onto $("#directions")
+        // If successful response, append response onto $("#directions")
         else {
-            directionsList = $("#directions");
             var steps_array = response.routes[0].legs[0].steps
             for (let i = 0, j = steps_array.length; i < j; i++) {
                 let newli = $("<li>");
@@ -380,7 +337,6 @@ function embedMap() {
 // TODO:
 /* 
 order directions list
-only call directions service once (and add loading?). also a bug: will keep appending new directions.
 only get variables from local storage on results page
 check on hike and restaurant waypoints
 if no waypoints, then tell user they must select a waypoint (with a modal?)
@@ -389,6 +345,6 @@ add photos service
 animate directions droplist
 add directions waypoints to query url
 display travel time somewhere?
-organize makeCall()
+organize geocodeAddressUrl()
 general organization
 */

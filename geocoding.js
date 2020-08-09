@@ -265,9 +265,11 @@ function getTravelTime(startLatLong, endLatLong) {
 
 /** Prints out verbal directions from a start to an end point. Directions are appended onto a div with id='directions' */
 function getDirections(startLatLong, endLatLong) {
+    var waypointsArray = populateWaypointsArray();
     var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/directions/json?units=imperial&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destination=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
     // add the api key
     queryURL += "&key=" + APIKEY;
+    var directionsList;
 
     $.ajax({
         url: queryURL,
@@ -275,19 +277,21 @@ function getDirections(startLatLong, endLatLong) {
     }).then(function(response) {
         // Make sure that a valid response is returned. If not, print an error message.
         if (response.status !== "OK") {
-            directionsPara = $("#directions");
-            let newPara = $("<p>");
-            newPara.text("Error - directions cannot be found.");
-            directionsPara.append(newPara);
+            directionsList = $("#directions");
+            let newli = $("<li>");
+            newli.attr("class", "list-group-item");
+            newli.text("Error - directions cannot be found.");
+            directionsList.append(newli);
         }
         // Append response onto $("#directions")
         else {
-            directionsPara = $("#directions");
+            directionsList = $("#directions");
             var steps_array = response.routes[0].legs[0].steps
             for (let i = 0, j = steps_array.length; i < j; i++) {
-                let newPara = $("<p>");
-                newPara.html(steps_array[i].html_instructions);
-                directionsPara.append(newPara);
+                let newli = $("<li>");
+                newli.attr("class", "list-group-item");
+                newli.html(steps_array[i].html_instructions);
+                directionsList.append(newli);
             }
         }
     });
@@ -321,25 +325,18 @@ function populateWaypointsArray() {
 }
 
 
-/** Given starting and ending coordinates, embeds a map of directions in an iframe with id='rendered-map' */
-function embedMap() {
-    // Notes: dont' use heroku CORS fixer in the queryURL.
-    // general request format is: https://www.google.com/maps/embed/v1/MODE?key=YOUR_API_KEY&parameters
-    // mode is set to 'directions' here, but can be place, search, view, direction, or streetview
-    var mode = "directions";
-
-    // First, put the API key and starting location into the queryURL.
-    var queryURL = "https://www.google.com/maps/embed/v1/" + mode + "?key=" + APIKEY;
-    queryURL += "&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude;
-
-    // Next, add the waypoints to the queryURL:
+function addWaypointsToQueryURL(queryURL) {
+    // First, populate an array with the waypoints in order.
     var waypointsArray = populateWaypointsArray();
+
+    // Then, add each waypoint to the queryURL, in order. Should have at least one waypoint.
     if (waypointsArray.length === 0) {
         console.log("no endpoints set!");
     }
     if (waypointsArray.length > 1) {
         queryURL += "&waypoints=";
     }
+    // After each waypoint is added as a parameter, remove it from the array. Finish when there are no waypoints left to add.
     while (waypointsArray.length > 0) {
         if (waypointsArray.length === 1) {
             queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
@@ -350,6 +347,22 @@ function embedMap() {
             waypointsArray.shift();
         }
     }
+    return queryURL;
+}
+
+
+/** Given starting and ending coordinates, embeds a map of directions in an iframe with id='rendered-map' */
+function embedMap() {
+    // Notes: dont' use heroku CORS fixer in the queryURL.
+    // general request format is: https://www.google.com/maps/embed/v1/MODE?key=YOUR_API_KEY&parameters
+    // mode is set to 'directions' here, but can be place, search, view, direction, or streetview
+    var mode = "directions";
+
+    // First, put the API key and starting location into the queryURL.
+    var queryURL = "https://www.google.com/maps/embed/v1/" + mode + "?key=" + APIKEY;
+    queryURL += "&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude;
+    // Next, add the waypoints to the URL.
+    queryURL = addWaypointsToQueryURL(queryURL);
 
     // Finally, embed the map.
     $("#journeyrendered-map").attr("src", queryURL);

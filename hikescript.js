@@ -27,9 +27,11 @@ for(var i=0; i < response.trails.length; i++){
 	console.log(trail);
 //do DOM manipulation here and put on page...
 //do work here...
+$("#difficulty").val(length);
+$("#hikeMap").val(URL);
 
-
-
+localStorage.setItem("hikeLocation", JSON.stringify(hikeLatLong));
+hikeLatLong = JSON.parse(localStorage.getItem("hikeAddress"));
 }
 }).catch(function(err){
 	console.log("err - "+err)
@@ -42,11 +44,3 @@ $("#submit").on("click", function(){
 	APICall()
 })
 
-// function main() {
-
-// }
-// $(document).ready(main);
-
-// function  getHikeLatLon() {
-// 	hikeLatLong = localStorage.getItem("hikeLatLong")
-// }

@@ -117,34 +117,42 @@ function addLocationButtonEventListeners() {
     // Upon button click, store new address. Set query url to the address. Make the ajax call for that address.
     $("#submitaddress").on("click", function(event) {
         event.preventDefault()
-        address = $("#address").val();
-        zip = $("#zip").val();
-        city = $("#city").val();
-        state = $("#state").val();
+        address = $("#address").val().trim();
+        address = removeSpaces(address);
+        zip = $("#zip").val().trim();
+        zip = removeSpaces(zip);
+        city = $("#city").val().trim();
+        city = removeSpaces(city);
+        state = $("#state").val().trim();
+        state = removeSpaces(state);
         localStorage.setItem("startAddressObj", JSON.stringify({address, zip, city, state}));
+
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
         startAddress = true;
         geocodeAddressUrl(queryURL);
+
         location.href="TrekFinalAddress.html";
     });
 
     // Button for end location address. Set query url to the address. Make the ajax call for that address.
     $("#submitfinaladdress").on("click", function(event) {
         event.preventDefault()
-        address = $("#end-address").val();
-        zip = $("#end-zip").val();
-        city = $("#end-city").val();
-        state = $("#end-state").val();
+        address = $("#end-address").val().trim();
+        address = removeSpaces(address);
+        zip = $("#end-zip").val().trim();
+        zip = removeSpaces(zip);
+        city = $("#end-city").val().trim();
+        city = removeSpaces(city);
+        state = $("#end-state").val().trim();
+        state = removeSpaces(state);
         localStorage.setItem("endAddressObj", JSON.stringify({address, zip, city, state}));
+
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         startAddress = false;
         geocodeAddressUrl(queryURL);
+
         location.href="TrekStartHikeQuestions.html";
-        // geocodeAddressUrl().then(function(result) {
-        //     endLatLong = latLongObj;
-        //     localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
-        // });
     });
 
     // button that returns distance and travel time on click
@@ -169,12 +177,28 @@ function addLocationButtonEventListeners() {
 }
 
 
+/** Removes spaces from a string and replaces them with "%20" for use in urls */
+function removeSpaces(str) {
+    console.log(str)
+
+    for (let i = 0; i < str.length; i++)
+        if (str[i] === " ") {
+            var leftStr = str.slice(0, i);
+            var rightStr = str.slice(i + 1,);
+            str = leftStr + "%20" + rightStr;
+        }
+    console.log(str)
+    return str;
+}
+
+
 // GOOGLE MAPS API FUNCTIONS
 // -------------------------
 
 /** Converts an address to latitude/longitude using ajax call to geocoding service.
  * Then stores the latitude/longitude in local storage. */
 function geocodeAddressUrl(queryURL) {
+    console.log(queryURL)
     $.ajax({
         url: queryURL,
         method: "GET"

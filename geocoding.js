@@ -122,11 +122,17 @@ function addLocationButtonEventListeners() {
         city = $("#city").val();
         state = $("#state").val();
         localStorage.setItem("startAddressObj", JSON.stringify({address, zip, city, state}));
+        address = removeSpaces(address);
+        zip = removeSpaces(zip);
+        city = removeSpaces(city);
+        state = removeSpaces(state);
+
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
         startAddress = true;
-        geocodeAddressUrl(queryURL);
-        location.href="TrekFinalAddress.html";
+        geocodeAddressUrl(queryURL).then(function() {
+            
+        });
     });
 
     // Button for end location address. Set query url to the address. Make the ajax call for that address.
@@ -137,14 +143,16 @@ function addLocationButtonEventListeners() {
         city = $("#end-city").val();
         state = $("#end-state").val();
         localStorage.setItem("endAddressObj", JSON.stringify({address, zip, city, state}));
+        address = removeSpaces(address);
+        zip = removeSpaces(zip);
+        city = removeSpaces(city);
+        state = removeSpaces(state);
+
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         startAddress = false;
-        geocodeAddressUrl(queryURL);
-        location.href="TrekStartHikeQuestions.html";
-        // geocodeAddressUrl().then(function(result) {
-        //     endLatLong = latLongObj;
-        //     localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
-        // });
+        geocodeAddressUrl(queryURL).then(function() {
+            
+        })
     });
 
     // button that returns distance and travel time on click
@@ -169,12 +177,31 @@ function addLocationButtonEventListeners() {
 }
 
 
+/** Removes spaces from a string and replaces them with "%20" for use in urls */
+function removeSpaces(str) {
+    console.log(str)
+    if (str === null) {
+        return;
+    }
+    str = str.trim();
+    for (let i = 0; i < str.length; i++)
+        if (str[i] === " ") {
+            var leftStr = str.slice(0, i);
+            var rightStr = str.slice(i + 1,);
+            str = leftStr + "%20" + rightStr;
+        }
+    console.log(str)
+    return str;
+}
+
+
 // GOOGLE MAPS API FUNCTIONS
 // -------------------------
 
 /** Converts an address to latitude/longitude using ajax call to geocoding service.
  * Then stores the latitude/longitude in local storage. */
 function geocodeAddressUrl(queryURL) {
+    console.log(queryURL)
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -192,11 +219,13 @@ function geocodeAddressUrl(queryURL) {
         if (startAddress) {
             startLatLong = latLongObj;
             localStorage.setItem("startLatLong", JSON.stringify(startLatLong));
+            location.href="TrekFinalAddress.html";
         }
         // if final address:
         else {
             endLatLong = latLongObj;
             localStorage.setItem("endLatLong", JSON.stringify(endLatLong));
+            location.href="TrekStartHikeQuestions.html";
         }
     });
 }
@@ -361,7 +390,7 @@ only get variables from local storage on results page
 check on hike and restaurant waypoints
 if no waypoints, then tell user they must select a waypoint (with a modal?)
 improve embed map
-add photos service? - "view" mode for embed, with parameter "center"
+add satellite photos service? - "view" mode for embed, with parameter "center"
 animate directions droplist
 display travel time somewhere?
 organize geocodeAddressUrl()

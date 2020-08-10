@@ -361,7 +361,7 @@ only get variables from local storage on results page
 check on hike and restaurant waypoints
 if no waypoints, then tell user they must select a waypoint (with a modal?)
 improve embed map
-add photos service? - "view" mode for embed, with parameter "center"
+add satellite photos service? - "view" mode for embed, with parameter "center"
 animate directions droplist
 display travel time somewhere?
 organize geocodeAddressUrl()

@@ -1,0 +1,140 @@
+.container-fluid {
+    /* The image used */
+    background-image: url("https://images.unsplash.com/photo-1503891450247-ee5f8ec46dc3?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80");
+
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+
+
+
+.navbar-toggler1 {
+    padding: .25rem .75rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    background-color: rgb(100, 108, 126);
+    border: rgb(183, 174, 174);
+    top: 0;
+    right: 0;
+    position: fixed;
+}
+
+
+.header {
+    color: rgb(158, 146, 186);
+    font-weight: bolder;
+    background-color: transparent;
+    letter-spacing: 15px;
+    font: 400 20px/1.8 "Lato", sans-serif;
+    margin-top: 0px;
+}
+
+
+body, html {
+    height: 100%;
+}
+
+.container-fluid {
+    /* The image used */
+    background-image: url("https://images.unsplash.com/photo-1554143091-c41d76e3da15?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80");
+
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container-fluid2 {
+    /* The image used */
+    background-image: url("https://twincitiesmedia.net/blog/wp-content/gallery/20190924-marina/Marina-2.jpg");
+
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+.center-text {
+    margin-top: 100px;
+}
+
+.text-center {
+    color: white;
+    font-weight: bolder;
+    background-color: transparent;
+    letter-spacing: 10px;
+    font: 400 18px/1.8 "Lato", sans-serif;
+    float: center;
+    background-color: rgb(27, 23, 22);
+}
+
+.card1 {
+    background-color: transparent;
+    float: center;
+}
+
+.card-text {
+    color: white;
+    letter-spacing: 10px;
+    font: 400 12px/1.8 "Lato", sans-serif;
+    text-align:center;
+}
+
+
+
+.contact {
+    color: white;
+    font-weight: bolder;
+    background-color: transparent;
+    width: 200px;
+    padding: 18px; 
+    letter-spacing: 10px;
+    font: 400 20px/1.8 "Lato", sans-serif;
+    text-align: left;
+
+}
+
+
+
+
+
+
+
+@media only screen and (max-width: 734px) {
+    .navbar-toggler1 {
+        background-color:rgb(124, 83, 162);
+    }
+    a {    
+        width: 100%;
+        font-size: 12px;
+        padding: 0px;
+        letter-spacing: 5px;
+        font: 400 12px/1.8 "Lato", sans-serif;
+
+    }
+    .container-fluid2 {
+        /* The image used */
+        background-image: url("https://twincitiesmedia.net/blog/wp-content/gallery/20190924-marina/Marina-2.jpg");
+    
+        height: auto;
+    
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding-bottom: 40px;
+    }
+    
+  
+}

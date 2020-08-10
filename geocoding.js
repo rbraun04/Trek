@@ -161,6 +161,11 @@ function addLocationButtonEventListeners() {
     $("#embed-map").on("click", function() {
         embedMap();
     });
+
+    // button that gives a satellite photo view
+    $("#end-address-photo").on("click", function() {
+        satelliteViewEmbed(endLatLong);
+    })
 }
 
 
@@ -334,16 +339,30 @@ function embedMap() {
     $("#journeyrendered-map").attr("src", queryURL);
 }
 
+
+/** Given an object with latitude and longitude, embed a satellite view of the coordinates. */
+function satelliteViewEmbed(place) {
+    // Notes: dont' use heroku CORS fixer in the queryURL.
+    var mode = "view";
+
+    // First, put the API key and starting location into the queryURL.
+    var queryURL = "https://www.google.com/maps/embed/v1/" + mode + "?key=" + APIKEY;
+    queryURL += "&center=" + place.latitude + "%2C" + place.longitude;
+    queryURL += "&zoom=20&maptype=satellite";
+
+    // Finally, embed the map.
+    $("#satellite-photo").attr("src", queryURL);
+}
+
+
 // TODO:
 /* 
-order directions list
 only get variables from local storage on results page
 check on hike and restaurant waypoints
 if no waypoints, then tell user they must select a waypoint (with a modal?)
 improve embed map
-add photos service
+add photos service? - "view" mode for embed, with parameter "center"
 animate directions droplist
-add directions waypoints to query url
 display travel time somewhere?
 organize geocodeAddressUrl()
 general organization

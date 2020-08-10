@@ -28,6 +28,7 @@ for(var i=0; i < response.trails.length; i++){
 //do DOM manipulation here and put on page...
 //do work here...
 $("#difficulty").val(length);
+$("#hikeDistance").val(length);
 $("#hikeMap").val(URL);
 
 localStorage.setItem("hikeLocation", JSON.stringify(hikeLatLong));

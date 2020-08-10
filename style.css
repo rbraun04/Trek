@@ -12,6 +12,9 @@
     float: center;
 }
 
+.startpage {
+    margin-top: 60px;
+}
 .section {
     position: fixed;
     object-fit: cover;

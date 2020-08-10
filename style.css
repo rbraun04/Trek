@@ -101,27 +101,6 @@ body, html {
     background-size: cover;
 }
 
-.container-fluid-starting {
-    /* The image used */
-
-    height: 100%;
-
-    /* Center and scale the image nicely */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.container-fluid2 {
-    /* The image used */
-    
-    height: 100%;
-
-    /* Center and scale the image nicely */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
 
 
 .center-text {

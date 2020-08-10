@@ -49,16 +49,14 @@
             <div class="firstQuestions">
                     <div class="form-group rounded firstQuestions">
                       <label for="typeoffood">What type of food would you like to eat?</label>
-                      <select class="form-control" id="typeoffood" >
-                        <option>Yes</option>
-                        <option>No</option>
-                      </select>
+                      <input type="text" class="form-control" id="input" placeholder="Input seafood, fast food, gourmet..." aria-label="Input food type" aria-describedby="basic-addon2">
                     </div>
                     <div class="form-group rounded firstQuestions" >
                       <label for="pricing">Pricing?</label>
-                      <select class="form-control" id="pricing">
-                        <option>Yes</option>
-                        <option>No</option>
+                      <select class="form-control" id="pricing" onchange ="selectOption();">
+                        <option value="$">$ - Low</option>
+                        <option value="$$">$$ - Medium</option>
+                        <option value="$$$">$$$ - High</option>
                       </select>
                     </div>
                       
@@ -83,6 +81,106 @@
 </footer>
 
 </div> 
+
+<script type="text/javascript">
+    var apiKey = "Bearer huZM0jW7oxfJk_QU1FrFl1ZnuU8y3B8yAFAlAn7RKVr8YIRsHqibw2RnwD19sD2vXCCTTOUNJfwV5VMTEPSy7IecJkDUzzHDMj5fWehQ7wN8GSj2VPe_16ZdbCIrX3Yx"
+    
+    // $("#submitfinaladdress").on("click", function() {
+  // get input from textbox --> category variable
+function selectOption() {
+        var selectMenu = document.getElementById("pricing");
+        var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
+        console.log(displayValuePrice);
+    }
+
+function inputValue(){
+}
+        var category = document.getElementById("input").value
+
+        console.log(category);
+
+
+ var address = "Gardena";
+
+    var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
+  
+//     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=34.0610816&longitude=-118.422122&locale=it_IT&categories=" + category + "&term=restaurant";
+//     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=" + latitude + "&longitude=" + longitude + "&locale=it_IT&categories=" + category + "&term=restaurant";
+    $.ajax({
+        url: queryURL,
+        method: "GET",
+        headers: {
+            'Authorization': apiKey,
+        },
+      })
+      .then(function(response){
+        var busres1 = response.businesses[0];
+        var busres2 = response.businesses[1];
+        var busres3 = response.businesses[2];
+
+          for (var i = 0; i < response.businesses.length; i++) {
+
+              var priceFilter = [];
+
+              if (response.businesses[i].price === "$") {
+
+                  priceFilter.push(response.businesses[i]);
+                  
+                  console.log(priceFilter);
+
+                }
+              
+              else if (response.businesses[i].price === "$$") {
+
+                  priceFilter.push(response.businesses[i]);
+
+                  console.log(priceFilter);
+
+                }
+
+              else {
+
+                  priceFilter.push(response.businesses[i]);
+
+                  console.log(priceFilter);
+
+                }
+
+            }
+// option value 
+
+        // // if response.businesses[i].price = "$$$", return
+        // // Pull-up descriptions, budgets, & ?rsvp?
+        // //   console.log(response);
+        // console.log(response);
+        // // for result#1
+        // // budget 
+        // console.log(busres1.price);
+        // // image
+        // console.log(busres1.image_url);
+        // // rating
+        // console.log(busres1.rating);
+        
+        // // for result#2
+        // // budget
+        // console.log(busres2.price);
+        // // image
+        // console.log(busres2.image_url);
+        // // rating
+        // console.log(busres2.rating);
+
+        // // for result#3
+        // // budget
+        // console.log(busres3.price);
+        // // image
+        // console.log(busres3.image_url);
+        // // rating
+        // console.log(busres3.rating);
+
+      })
+// })
+
+</script>
 
 
 

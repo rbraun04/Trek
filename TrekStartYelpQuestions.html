@@ -163,6 +163,38 @@ submitBtn.addEventListener("click", function() {
 
         localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
 
+        var latitude = response.businesses[0].coordinates.latitude;
+
+        var longitude = response.businesses[0].coordinates.longitude;
+        
+        var restaurantCoordinates1 = {
+            
+            latitude, longitude
+        
+        }
+            console.log(latLongObj1)
+        
+        var latitude = response.businesses[1].coordinates.latitude;
+
+        var longitude = response.businesses[1].coordinates.longitude;
+        
+        var restaurantCoordinates2 = {
+            
+            latitude, longitude
+        
+        }
+            console.log(latLongObj2)
+        
+        var latitude = response.businesses[2].coordinates.latitude;
+
+        var longitude = response.businesses[2].coordinates.longitude;
+        
+        var restaurantCoordinates3 = {
+            
+            latitude, longitude
+        
+        }
+            console.log(latLongObj3)
         
       })
     

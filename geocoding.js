@@ -390,8 +390,12 @@ function addWaypointsToQueryURL(queryURL) {
         if (waypointsArray.length > 1) {
             queryURL += waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
             waypointsArray.shift();
+            if (waypointsArray.length > 1) {
+                queryURL += "|";
+            }
         }
     }
+    console.log(queryURL)
     return queryURL;
 }
 

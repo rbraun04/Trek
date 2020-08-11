@@ -16,6 +16,22 @@ var maxDistance =  "&maxDistance=" + inputDistance
 var hikeLatLong = "lat=" + inputLat + "&" + "lon=" + inputLon
 var queryURL = api + hikeLatLong + maxDistance + apiKey
 
+var hikeOption1 = document.getElementById("#hikeoption1")
+var hikeOption2 = document.getElementById("#hikeoption2")
+var hikeOption3 = document.getElementById("#hikeoption3")
+var hikeImage1 = document.getElementById("#hikeoption1")
+var hikeImage2 = document.getElementById("#hikeoption2")
+var hikeImage3 = document.getElementById("#hikeoption3")
+
+hikeOption1 = response.trails[0].difficulty
+hikeOption2 = response.trails[1].difficulty
+hikeOption3 = response.trails[2].difficulty
+
+hikeImage1= response.trails[0].url
+hikeImage2 = response.trails[1].url
+hikeImage3 = response.trails[2].url
+
+
 console.log(queryURL)
 $.ajax({
 	url: queryURL,
@@ -58,7 +74,7 @@ var latLongObj3 = {
     localStorage.setItem("hikeLocation1", JSON.stringify(latLongObj1));
     localStorage.setItem("hikeLocation2", JSON.stringify(latLongObj2));
     localStorage.setItem("hikeLocation3", JSON.stringify(latLongObj3));
-// location.href="filename.html";
+location.href="TrekHikeResult.html";
 
 }).catch(function(err){
 	console.log("err - "+err)
@@ -66,7 +82,6 @@ var latLongObj3 = {
 
 }
 
-//...
 $("#submitHike").on("click", function(){
 	APICall()
 })

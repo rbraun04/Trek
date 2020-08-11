@@ -53,8 +53,7 @@
                     </div>
                     <div class="form-group rounded firstQuestions" >
                       <label for="pricing">Pricing?</label>
-                      <select class="form-control" id="pricing" onchange ="selectOption()";>
-                        <option>Select budget price...</option>
+                      <select class="form-control" id="pricing" onchange ="selectOption();">
                         <option value="$">$ - Low</option>
                         <option value="$$">$$ - Medium</option>
                         <option value="$$$">$$$ - High</option>
@@ -62,7 +61,7 @@
                     </div>
                       
                   </form>
-                <a type="submit" class="btn btn-dark" id="yelpSubmit">Submit</a>
+                <a type="submit" class="btn btn-dark" href="TrekYelpResult.html" id="submityelpquestion">Submit</a>
                 <a type="submit" class="btn btn-dark" href="TrekJourneyResult.html" id="skipfinaladddress">Skip</a>
             </div>
         </div>
@@ -81,42 +80,29 @@
 
 
 <script type="text/javascript">
-
     var apiKey = "Bearer huZM0jW7oxfJk_QU1FrFl1ZnuU8y3B8yAFAlAn7RKVr8YIRsHqibw2RnwD19sD2vXCCTTOUNJfwV5VMTEPSy7IecJkDUzzHDMj5fWehQ7wN8GSj2VPe_16ZdbCIrX3Yx"
-
-    var address = "Gardena";
-
-    var category = document.getElementById("input").value;
     
+    // $("#submitfinaladdress").on("click", function() {
+  // get input from textbox --> category variable
+function selectOption() {
+        var selectMenu = document.getElementById("pricing");
+        var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
+        console.log(displayValuePrice);
+    }
+
+function inputValue(){
+}
+        var category = document.getElementById("input").value
+
+        console.log(category);
+
+
+ var address = "Gardena";
+
+    var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
   
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=34.0610816&longitude=-118.422122&locale=it_IT&categories=" + category + "&term=restaurant";
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=" + latitude + "&longitude=" + longitude + "&locale=it_IT&categories=" + category + "&term=restaurant";
-        function selectOption() {
-
-            var selectMenu = document.getElementById("pricing");
-
-            var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
-
-            console.log(displayValuePrice);
-
-            // localStorage.getItem()
-
-        }
-
-
-
-var submitBtn = document.getElementById("yelpSubmit");
-
-submitBtn.addEventListener("click", function() {
-    
-    var selectMenu = document.getElementById("pricing");
-
-    var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
-
-    var category = document.getElementById("input").value;
-
-    var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=3&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
-
     $.ajax({
         url: queryURL,
         method: "GET",
@@ -125,90 +111,43 @@ submitBtn.addEventListener("click", function() {
         },
       })
       .then(function(response){
-    
         var busres1 = response.businesses[0];
         var busres2 = response.businesses[1];
         var busres3 = response.businesses[2];
 
-        console.log(response.businesses.length);
-        
-        console.log(queryURL);
-        var priceFilter = []
-        for (var i = 0; i < response.businesses.length; i++) {
-            
-            console.log(i);
+          for (var i = 0; i < response.businesses.length; i++) {
 
-            if (response.businesses[i].price === "$") {
+              var priceFilter = [];
 
-                priceFilter.push(response.businesses[i]);
+              if (response.businesses[i].price === "$") {
+
+                  priceFilter.push(response.businesses[i]);
+                  
+                  console.log(priceFilter);
+
+                }
+              
+              else if (response.businesses[i].price === "$$") {
+
+                  priceFilter.push(response.businesses[i]);
+
+                  console.log(priceFilter);
+
+                }
+
+              else {
+
+                  priceFilter.push(response.businesses[i]);
+
+                  console.log(priceFilter);
+
+                }
 
             }
+// option value 
 
-            else if (response.businesses[i].price === "$$") {
-
-                priceFilter.push(response.businesses[i]);
-
-            }
-
-            else {
-
-                priceFilter.push(response.businesses[i]);
-
-            }
-            console.log(response);
-            console.log(priceFilter);
-            console.log(response.businesses[i].price);
-            console.log(response.businesses[i]);
-
-}
-
-        localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
-
-        var latitude = response.businesses[0].coordinates.latitude;
-
-        var longitude = response.businesses[0].coordinates.longitude;
-        
-        var restaurantCoordinates1 = {
-            
-            latitude, longitude
-        
-        }
-            console.log(latLongObj1)
-        
-        var latitude = response.businesses[1].coordinates.latitude;
-
-        var longitude = response.businesses[1].coordinates.longitude;
-        
-        var restaurantCoordinates2 = {
-            
-            latitude, longitude
-        
-        }
-            console.log(latLongObj2)
-        
-        var latitude = response.businesses[2].coordinates.latitude;
-
-        var longitude = response.businesses[2].coordinates.longitude;
-        
-        var restaurantCoordinates3 = {
-            
-            latitude, longitude
-        
-        }
-            console.log(latLongObj3)
-        
-      })
-    
-    // assign value to option chosen on pulldown menu
-        
-    // create variable for submit button
-    
-            
-    // console.log(priceFilter);
-
-    
-    // create function for clicking submit button
-
+        // // if response.businesses[i].price = "$$$", return
+        // // Pull-up descriptions, budgets, & ?rsvp?
         // //   console.log(response);
         // console.log(response);
         // // for result#1
@@ -234,9 +173,12 @@ submitBtn.addEventListener("click", function() {
         // console.log(busres3.image_url);
         // // rating
         // console.log(busres3.rating);
-        // location.href="TrekYelpResult.html";
+
       })
+// })
 
 </script>
+
+
 </body>
 </html>

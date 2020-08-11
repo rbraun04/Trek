@@ -33,7 +33,7 @@ function main() {
     addLocationButtonEventListeners();
 
     if (goingOnHike === false && goingToRestaurant === false && endLatLong === null) {
-        console.log("There are no waypoints!!")
+        ;  // should code for this case
     }
 
     // render the embedded map, but only if the iframe is present

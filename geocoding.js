@@ -174,15 +174,15 @@ function addLocationButtonEventListeners() {
         })
     }
 
-    $("#hikechoice1").on("click", function() {
+    $("#hikeselection1").on("click", function() {
         localStorage.setItem("hikechoice", 1);
     });
 
-    $("#hikechoice2").on("click", function() {
+    $("#hikeselection2").on("click", function() {
         localStorage.setItem("hikechoice", 2);
     });
 
-    $("#hikechoice3").on("click", function() {
+    $("#hikeselection3").on("click", function() {
         localStorage.setItem("hikechoice", 3);
     });
 

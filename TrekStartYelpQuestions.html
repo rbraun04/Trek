@@ -84,9 +84,11 @@
     
     // $("#submitfinaladdress").on("click", function() {
   // get input from textbox --> category variable
+var displayValuePrice;
+
 function selectOption() {
         var selectMenu = document.getElementById("pricing");
-        var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
+        displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
         console.log(displayValuePrice);
     }
 
@@ -101,7 +103,7 @@ function inputValue(){
 
     var address = "Gardena";
 
-    queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
+    queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=30&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
 
 }
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=34.0610816&longitude=-118.422122&locale=it_IT&categories=" + category + "&term=restaurant";
@@ -121,15 +123,28 @@ function runMe() {
     var busres3 = response.businesses[2];
     console.log(response.businesses.length)
     var priceFilter = [];
+    var addedBusinesses = [];
     for (var i = 0; i < response.businesses.length; i++) {
-      if (response.businesses[i].price === "$") {
+      if (response.businesses[i].price === "$" && displayValuePrice === "$") {
         priceFilter.push(response.businesses[i]);
-        console.log(priceFilter);
+        addedBusinesses.push(i);
       }
-      else if (response.businesses[i].price === "$$") {
+      else if (response.businesses[i].price === "$$" && displayValuePrice === "$$") {
           priceFilter.push(response.businesses[i]);
-          console.log(priceFilter);
+          addedBusinesses.push(i);
       }
+      else if (response.businesses[i].price === "$$$" && displayValuePrice === "$$$"){
+        priceFilter.push(response.businesses[i]);
+        addedBusinesses.push(i);
+      }
+    }
+    var j = 0;
+    while (priceFilter.length < 3) {
+      while (addedBusinesses.includes(j)) {
+        j++;
+      }
+      priceFilter.push(response.businesses[j]);
+      j++;
     }
     localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
     var latitude = response.businesses[0].coordinates.latitude;

@@ -123,7 +123,7 @@ function runMe() {
     var busres3 = response.businesses[2];
     console.log(response.businesses.length)
     var priceFilter = [];
-    var addedBusinesses = [];
+    var addedBusinesses = [];   // Keeping track of businesses already added to price filter array
     for (var i = 0; i < response.businesses.length; i++) {
       if (response.businesses[i].price === "$" && displayValuePrice === "$") {
         priceFilter.push(response.businesses[i]);
@@ -138,6 +138,7 @@ function runMe() {
         addedBusinesses.push(i);
       }
     }
+    // if less then 3 results are in the price filter array, fill it out with less expensive options
     var j = 0;
     while (priceFilter.length < 3) {
       while (addedBusinesses.includes(j)) {
@@ -146,6 +147,7 @@ function runMe() {
       priceFilter.push(response.businesses[j]);
       j++;
     }
+
     localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
     var latitude = response.businesses[0].coordinates.latitude;
     var longitude = response.businesses[0].coordinates.longitude;

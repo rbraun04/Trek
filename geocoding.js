@@ -329,9 +329,10 @@ function populateWaypointsArray() {
     var restaurantChoice = localStorage.getItem("restaurantchoice");
     var restaurantLatLong = JSON.parse(localStorage.getItem("restaurantLocation" + restaurantChoice));
 
+
     waypointsArray.push(hikeLatLong);
     waypointsArray.push(restaurantLatLong);
-    return waypointsArray;
+
     // CODE FOR LOGIC USED IF ONLY GOING TO ONE OR THE OTHER, OR OUT OF ORDER
     // if (goingOnHike && goingToRestaurant) {
     //     if (hikeFirst) {
@@ -344,21 +345,22 @@ function populateWaypointsArray() {
     //     }
     // }
     // else if (goingOnHike) {
-    //     waypointsArray.push(hikeLatLong);
+        //     waypointsArray.push(hikeLatLong);
     // }
     // else if (goingToRestaurant) {
-    //     waypointsArray.push(restaurantLatLong);
+        //     waypointsArray.push(restaurantLatLong);
     // }
-    // if (endLatLong !== null) {
-    //     waypointsArray.push(endLatLong);
-    // }
+    if (endLatLong !== null) {
+        waypointsArray.push(endLatLong);
+    }
+    return waypointsArray;
 }
 
 
 function addWaypointsToQueryURL(queryURL) {
     // First, populate an array with the waypoints in order.
     var waypointsArray = populateWaypointsArray();
-
+    console.log(waypointsArray)
     // Then, add each waypoint to the queryURL, in order. Should have at least one waypoint.
     if (waypointsArray.length === 0) {
         console.log("no endpoints set!");

@@ -47,24 +47,30 @@
                 <div class="row firstQuestions">
                 <div class="col-md-4">
                     <div style="width: 18rem;">
-                        <p id="choice1description">Restaraunt Rating</p>
-                        <div class="card-body firstQuestions">
+                        <p id="choice1description"></p>
+                        <br>
+                        <p id="ratebox1"></p>
+                        <div class="card-body firstQuestions" id="box1">
                           <a href="TrekJourneyResult.html" class="btn btn-dark" id="restaurantchoice1">Select</a>
                         </div>
                       </div>
                 </div>
                 <div class="col-md-4">
                     <div style="width: 18rem;">
-                        <p id="choice1description">Restaraunt Rating</p>
-                        <div class="card-body firstQuestions">
+                        <p id="choice2description"></p>
+                        <br>
+                        <p id="ratebox2"></p>
+                        <div class="card-body firstQuestions" id="box2">
                           <a href="TrekJourneyResult.html" class="btn btn-dark" id="restaurantchoice2">Select</a>
                         </div>
                       </div>
                 </div>
                 <div class="col-md-4">
                     <div style="width: 18rem;">
-                        <p id="choice1description">Restaurant Rating</p>
-                        <div class="card-body firstQuestions">
+                        <p id="choice3description"></p>
+                        <br>
+                        <p id="ratebox3"></p>
+                        <div class="card-body firstQuestions" id="box3">
                           <a href="TrekJourneyResult.html" class="btn btn-dark" id="restaurantchoice3">Select</a>
                         </div>
                       </div>
@@ -82,6 +88,48 @@
         </footer>
 
     </div> 
+    <script>
+        var makeObject = JSON.parse(localStorage.getItem("Restaurants"));
+            console.log(makeObject);
+    // Option 1
+        var name = makeObject[0].name;
+        
+        $("#choice1description").append(name);
+        
+        var rating = makeObject[0].rating;
+        
+        $("#ratebox1").append("Rating: " + rating +" stars");
+        
+        var image = makeObject[0].image_url;
 
+        $("#box1").prepend("<img src="+ image + ">");
+
+    // Option 2
+        var name = makeObject[1].name;
+
+        $("#choice2description").append(name);
+        
+        var rating = makeObject[1].rating;
+
+        $("#ratebox2").append("Rating: " + rating +" stars");
+        
+        var image = makeObject[1].image_url;
+
+        $("#box2").prepend("<img src="+ image + ">");
+        
+    // Option 3
+        var name = makeObject[2].name;
+
+        $("#choice3description").append(name);
+        
+        var rating = makeObject[2].rating;
+
+        $("#ratebox3").append("Rating: " + rating +" stars");
+        
+        var image = makeObject[2].image_url;
+
+        $("#box3").prepend("<img src="+ image + ">");
+
+    </script>
 </body>
 </html>

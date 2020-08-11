@@ -135,15 +135,17 @@ function inputValue(){
 
                 }
 
-              else {
 
-                  priceFilter.push(response.businesses[i]);
+            localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
 
-                  console.log(priceFilter);
+            location.href="TrekYelpResult.html";
 
-                }
+}
 
-            }
+             var latitude = response.businesses[0].coordinates.latitude;
+=======
+              
+
 // option value 
 
         // // if response.businesses[i].price = "$$$", return

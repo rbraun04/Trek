@@ -139,45 +139,42 @@ function inputValue(){
 
             localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
 
-            location.href="TrekYelpResult.html";
-
 }
 
-             var latitude = response.businesses[0].coordinates.latitude;
-=======
-              
+        var latitude = response.businesses[0].coordinates.latitude;
 
-// option value 
+         var longitude = response.businesses[0].coordinates.longitude;
 
-        // // if response.businesses[i].price = "$$$", return
-        // // Pull-up descriptions, budgets, & ?rsvp?
-        // //   console.log(response);
-        // console.log(response);
-        // // for result#1
-        // // budget 
-        // console.log(busres1.price);
-        // // image
-        // console.log(busres1.image_url);
-        // // rating
-        // console.log(busres1.rating);
-        
-        // // for result#2
-        // // budget
-        // console.log(busres2.price);
-        // // image
-        // console.log(busres2.image_url);
-        // // rating
-        // console.log(busres2.rating);
+        var restaurantCoordinates1 = {
 
-        // // for result#3
-        // // budget
-        // console.log(busres3.price);
-        // // image
-        // console.log(busres3.image_url);
-        // // rating
-        // console.log(busres3.rating);
+            latitude, longitude
 
-        // location.href="TrekYelpResult.html";
+        }
+            console.log(latLongObj1)
+
+        var latitude = response.businesses[1].coordinates.latitude;
+
+        var longitude = response.businesses[1].coordinates.longitude;
+
+        var restaurantCoordinates2 = {
+
+            latitude, longitude
+
+        }
+            console.log(latLongObj2)
+
+        var latitude = response.businesses[2].coordinates.latitude;
+
+        var longitude = response.businesses[2].coordinates.longitude;
+
+        var restaurantCoordinates3 = {
+
+            latitude, longitude
+
+        }
+            console.log(latLongObj3)
+
+            location.href="TrekYelpResult.html";
       })
  
 

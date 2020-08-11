@@ -176,14 +176,17 @@ function addLocationButtonEventListeners() {
 
     $("#hikeselection1").on("click", function() {
         localStorage.setItem("hikechoice", 1);
+        location.href="TrekStartYelpQuestions.html";
     });
 
     $("#hikeselection2").on("click", function() {
         localStorage.setItem("hikechoice", 2);
+        location.href="TrekStartYelpQuestions.html";
     });
 
     $("#hikeselection3").on("click", function() {
         localStorage.setItem("hikechoice", 3);
+        location.href="TrekStartYelpQuestions.html";
     });
 
     $("#restaurantchoice1").on("click", function() {

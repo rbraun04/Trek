@@ -12,6 +12,9 @@
     float: center;
 }
 
+.startpage {
+    margin-top: 60px;
+}
 .section {
     position: fixed;
     object-fit: cover;
@@ -64,6 +67,7 @@
     margin-top: 50px;
 
 }
+
 .hikesubmitQuestions {
     color: rgb(255, 255, 255);
     font-weight: bolder;
@@ -72,6 +76,26 @@
     font: 400 18px/1.8 "Lato", sans-serif;
     text-align: right;
     margin-top: 25px;
+
+}
+.hikeAnswers {
+    color: rgb(255, 255, 255);
+    font-weight: bolder;
+    background-color: rgba(49, 88, 66, 0.8);
+    letter-spacing: 5px;
+    font: 400 15px/1.8 "Lato", sans-serif;
+    text-align: center;
+    margin-top: 5px;
+
+}
+
+.hikeSelect {
+    color: rgb(255, 255, 255);
+    font-weight: bolder;
+    background-color: rgba(33, 24, 24, 0.8);
+    letter-spacing: 10px;
+    font: 400 18px/1.8 "Lato", sans-serif;
+    text-align: center;
 
 }
 
@@ -141,6 +165,28 @@ body, html {
     font: 400 20px/1.8 "Lato", sans-serif;
     text-align: left;
 
+}
+.enjoyjourney {
+    color: rgb(249, 154, 0);
+    font-size: 32px;
+    background-color: transparent;
+    letter-spacing: 5px;
+    font-family: 'Dynalight', cursive;
+    text-align: center;
+}
+
+.map {
+    color: rgb(255, 255, 255);
+    font-weight: bolder;
+    background-color: #564c4c64;
+    letter-spacing: 10px;
+    font: 400 25px/1.8 "Lato", sans-serif;
+    text-align: center; 
+    opacity: .6;
+    text-align: center;
+    margin-bottom: 150px;
+    width: 100%; 
+    height: 400px; 
 }
 
 .foodpics {
@@ -216,6 +262,18 @@ body, html {
     margin-top: 25px; 
 
 }
+
+.enjoyjourney {
+    color: rgb(249, 154, 0);
+    font-weight: bolder;
+    font-size: 20px;
+    font-style: italic;
+    background-color: transparent;
+    letter-spacing: 5px;
+    font-family: 'Dynalight', cursive;
+    text-align: center;  
+
+}
 .navbar-brand {
     color: rgb(255, 255, 255);
     font-weight: bolder;
@@ -223,5 +281,9 @@ body, html {
     letter-spacing: 3px;
     font: 100 1px/.5 "Lato", sans-serif;
     text-align: left;  
+}
+
+.map {
+    height: 200px;
 }
 }

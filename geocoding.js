@@ -130,9 +130,7 @@ function addLocationButtonEventListeners() {
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
         startAddress = true;
-        geocodeAddressUrl(queryURL).then(function() {
-            
-        });
+        geocodeAddressUrl(queryURL);
     });
 
     // Button for end location address. Set query url to the address. Make the ajax call for that address.
@@ -150,36 +148,60 @@ function addLocationButtonEventListeners() {
 
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
         startAddress = false;
-        geocodeAddressUrl(queryURL).then(function() {
-            
+        geocodeAddressUrl(queryURL);
+    });
+
+    // If on last page
+    if (document.getElementsByTagName("body")[0].getAttribute("class") === "resultspage") {
+        // button that returns distance and travel time on click
+        $("#travel-time").on("click", function(event) {
+            getTravelTime(startLatLong, endLatLong);
         })
+
+        // button that returns directions on click
+        $("#get-directions").on("click", function() {
+            getDirections();
+        });
+
+        // button to embed map
+        $("#embed-map").on("click", function() {
+            embedMap();
+        });
+
+        // button that gives a satellite photo view
+        $("#end-address-photo").on("click", function() {
+            satelliteViewEmbed(endLatLong);
+        })
+    }
+
+    $("#hikeselection1").on("click", function() {
+        localStorage.setItem("hikechoice", 1);
     });
 
-    // button that returns distance and travel time on click
-    $("#travel-time").on("click", function(event) {
-        getTravelTime(startLatLong, endLatLong);
-    })
-
-    // button that returns directions on click
-    $("#get-directions").on("click", function() {
-        getDirections();
+    $("#hikeselection2").on("click", function() {
+        localStorage.setItem("hikechoice", 2);
     });
 
-    // button to embed map
-    $("#embed-map").on("click", function() {
-        embedMap();
+    $("#hikeselection3").on("click", function() {
+        localStorage.setItem("hikechoice", 3);
     });
 
-    // button that gives a satellite photo view
-    $("#end-address-photo").on("click", function() {
-        satelliteViewEmbed(endLatLong);
-    })
+    $("#restaurantchoice1").on("click", function() {
+        localStorage.setItem("restaurantchoice", 1);
+    });
+
+    $("#restaurantchoice2").on("click", function() {
+        localStorage.setItem("restaurantchoice", 2);
+    });
+
+    $("#restaurantchoice3").on("click", function() {
+        localStorage.setItem("restaurantchoice", 3);
+    });
 }
 
 
 /** Removes spaces from a string and replaces them with "%20" for use in urls */
 function removeSpaces(str) {
-    console.log(str)
     if (str === null) {
         return;
     }
@@ -190,7 +212,6 @@ function removeSpaces(str) {
             var rightStr = str.slice(i + 1,);
             str = leftStr + "%20" + rightStr;
         }
-    console.log(str)
     return str;
 }
 
@@ -302,22 +323,33 @@ function populateWaypointsArray() {
     // Since the only possible waypoints are hiking, restaurant, and a final destination, 
     // use conditional logic to put them in order.
     var waypointsArray = [];
-    if (goingOnHike && goingToRestaurant) {
-        if (hikeFirst) {
-            waypointsArray.push(hikeLatLong);
-            waypointsArray.push(restaurantLatLong);
-        }
-        else {
-            waypointsArray.push(restaurantLatLong);
-            waypointsArray.push(hikeLatLong);
-        }
-    }
-    else if (goingOnHike) {
-        waypointsArray.push(hikeLatLong);
-    }
-    else if (goingToRestaurant) {
-        waypointsArray.push(restaurantLatLong);
-    }
+    var hikeChoice = localStorage.getItem("hikechoice");
+    var hikeLatLong = JSON.parse(localStorage.getItem("hikeLocation" + hikeChoice));
+    console.log(hikeLatLong);
+    var restaurantChoice = localStorage.getItem("restaurantchoice");
+    var restaurantLatLong = JSON.parse(localStorage.getItem("restaurantLocation" + restaurantChoice));
+
+
+    waypointsArray.push(hikeLatLong);
+    waypointsArray.push(restaurantLatLong);
+
+    // CODE FOR LOGIC USED IF ONLY GOING TO ONE OR THE OTHER, OR OUT OF ORDER
+    // if (goingOnHike && goingToRestaurant) {
+    //     if (hikeFirst) {
+    //         waypointsArray.push(hikeLatLong);
+    //         waypointsArray.push(restaurantLatLong);
+    //     }
+    //     else {
+    //         waypointsArray.push(restaurantLatLong);
+    //         waypointsArray.push(hikeLatLong);
+    //     }
+    // }
+    // else if (goingOnHike) {
+        //     waypointsArray.push(hikeLatLong);
+    // }
+    // else if (goingToRestaurant) {
+        //     waypointsArray.push(restaurantLatLong);
+    // }
     if (endLatLong !== null) {
         waypointsArray.push(endLatLong);
     }
@@ -328,7 +360,7 @@ function populateWaypointsArray() {
 function addWaypointsToQueryURL(queryURL) {
     // First, populate an array with the waypoints in order.
     var waypointsArray = populateWaypointsArray();
-
+    console.log(waypointsArray)
     // Then, add each waypoint to the queryURL, in order. Should have at least one waypoint.
     if (waypointsArray.length === 0) {
         console.log("no endpoints set!");
@@ -338,6 +370,11 @@ function addWaypointsToQueryURL(queryURL) {
     }
     // After each waypoint is added as a parameter, remove it from the array. Finish when there are no waypoints left to add.
     while (waypointsArray.length > 0) {
+        if (waypointsArray[0] === null) {
+            waypointsArray.shift();
+            continue;
+        }
+        
         if (waypointsArray.length === 1) {
             queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
             waypointsArray.shift();

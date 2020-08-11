@@ -119,13 +119,13 @@ function runMe() {
     var priceFilter = [];
     for (var i = 0; i < response.businesses.length; i++) {
       if (response.businesses[i].price === "$") {
-        // priceFilter.push(response.businesses[i]);
+        priceFilter.push(response.businesses[i]);
         console.log(priceFilter);
       }
-      // else if (response.businesses[i].price === "$$") {
-      //     priceFilter.push(response.businesses[i]);
-      //     console.log(priceFilter);
-      // }
+      else if (response.businesses[i].price === "$$") {
+          priceFilter.push(response.businesses[i]);
+          console.log(priceFilter);
+      }
     }
     localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
     var latitude = response.businesses[0].coordinates.latitude;

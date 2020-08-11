@@ -62,8 +62,7 @@
                     </div>
                       
                   </form>
-                <a type="submit" class="btn btn-dark" href="TrekYelpResult.html" id="submityelpquestion">Submit</a>
-                <a type="submit" class="btn btn-dark" href="TrekJourneyResult.html" id="skipfinaladddress">Skip</a>
+                <a type="submit" class="btn btn-dark" id="submityelpquestion">Submit</a>
             </div>
         </div>
         <div class="col-md-"></div>
@@ -104,82 +103,64 @@ function inputValue(){
   
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=34.0610816&longitude=-118.422122&locale=it_IT&categories=" + category + "&term=restaurant";
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=" + latitude + "&longitude=" + longitude + "&locale=it_IT&categories=" + category + "&term=restaurant";
-    $.ajax({
-        url: queryURL,
-        method: "GET",
-        headers: {
-            'Authorization': apiKey,
-        },
-      })
-      .then(function(response){
-        var busres1 = response.businesses[0];
-        var busres2 = response.businesses[1];
-        var busres3 = response.businesses[2];
+function runMe() { 
+  $.ajax({
+    url: queryURL,
+    method: "GET",
+    headers: {
+      'Authorization': apiKey,
+    },
+  })  
+  .then(function(response) {
+    var busres1 = response.businesses[0];
+    var busres2 = response.businesses[1];
+    var busres3 = response.businesses[2];
+    console.log(response.businesses.length)
+    var priceFilter = [];
+    for (var i = 0; i < response.businesses.length; i++) {
+      if (response.businesses[i].price === "$") {
+        // priceFilter.push(response.businesses[i]);
+        console.log(priceFilter);
+      }
+      // else if (response.businesses[i].price === "$$") {
+      //     priceFilter.push(response.businesses[i]);
+      //     console.log(priceFilter);
+      // }
+    }
+    localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
+    var latitude = response.businesses[0].coordinates.latitude;
+    var longitude = response.businesses[0].coordinates.longitude;
+    var latLongObj1 = {latitude, longitude};
 
-          for (var i = 0; i < response.businesses.length; i++) {
+    latitude = response.businesses[1].coordinates.latitude;
+    longitude = response.businesses[1].coordinates.longitude;
+    var latLongObj2 = {latitude, longitude};
 
-              var priceFilter = [];
-
-              if (response.businesses[i].price === "$") {
-
-                  priceFilter.push(response.businesses[i]);
-                  
-                  console.log(priceFilter);
-
-                }
-              
-              else if (response.businesses[i].price === "$$") {
-
-                  priceFilter.push(response.businesses[i]);
-
-                  console.log(priceFilter);
-
-                }
+    latitude3 = response.businesses[2].coordinates.latitude;
+    longitude3 = response.businesses[2].coordinates.longitude;
+    var latLongObj3 = {latitude, longitude};
 
 
-            localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
 
-            location.href="TrekYelpResult.html";
 
-}
+    // latLongObj1.latitude = latitude1;
+    // latLongObj1.longitude = longitude1;
+    // latLongObj2.latitude = latitude2;
+    // latLongObj2.longitude = longitude2;
+    // latLongObj3.latitude = latitude3;
+    // latLongObj3.longitude = longitude3;
 
-             var latitude = response.businesses[0].coordinates.latitude;
-=======
-              
+    localStorage.setItem("restaurantLocation1", JSON.stringify(latLongObj1));
+    localStorage.setItem("restaurantLocation2", JSON.stringify(latLongObj2));
+    localStorage.setItem("restaurantLocation3", JSON.stringify(latLongObj3));
+    console.log("hello")
 
-// option value 
+    location.href="TrekYelpResult.html";
+  })
+};
 
-        // // if response.businesses[i].price = "$$$", return
-        // // Pull-up descriptions, budgets, & ?rsvp?
-        // //   console.log(response);
-        // console.log(response);
-        // // for result#1
-        // // budget 
-        // console.log(busres1.price);
-        // // image
-        // console.log(busres1.image_url);
-        // // rating
-        // console.log(busres1.rating);
-        
-        // // for result#2
-        // // budget
-        // console.log(busres2.price);
-        // // image
-        // console.log(busres2.image_url);
-        // // rating
-        // console.log(busres2.rating);
+$("#submityelpquestion").on("click", runMe);
 
-        // // for result#3
-        // // budget
-        // console.log(busres3.price);
-        // // image
-        // console.log(busres3.image_url);
-        // // rating
-        // console.log(busres3.rating);
-
-        // location.href="TrekYelpResult.html";
-      })
- 
 
 </script>
 

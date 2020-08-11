@@ -37,7 +37,7 @@ function main() {
     }
 
     // render the embedded map, but only if the iframe is present
-    if ($("#journeyrendered-map") !== undefined) {
+    if (document.getElementById("journeyrendered-map") !== null) {
         embedMap();
     }
 }
@@ -370,10 +370,10 @@ function addWaypointsToQueryURL(queryURL) {
     }
     // After each waypoint is added as a parameter, remove it from the array. Finish when there are no waypoints left to add.
     while (waypointsArray.length > 0) {
-        if (waypointsArray[0] === null) {
-            waypointsArray.shift();
-            continue;
-        }
+        // if (waypointsArray[0] === null) {
+        //     waypointsArray.shift();
+        //     continue;
+        // }
         
         if (waypointsArray.length === 1) {
             queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;

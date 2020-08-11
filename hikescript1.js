@@ -74,7 +74,9 @@ var latLongObj3 = {
     localStorage.setItem("hikeLocation1", JSON.stringify(latLongObj1));
     localStorage.setItem("hikeLocation2", JSON.stringify(latLongObj2));
     localStorage.setItem("hikeLocation3", JSON.stringify(latLongObj3));
+
 location.href="TrekHikeResult.html";
+
 
 }).catch(function(err){
 	console.log("err - "+err)

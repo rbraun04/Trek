@@ -151,25 +151,28 @@ function addLocationButtonEventListeners() {
         geocodeAddressUrl(queryURL);
     });
 
-    // button that returns distance and travel time on click
-    $("#travel-time").on("click", function(event) {
-        getTravelTime(startLatLong, endLatLong);
-    })
+    // If on last page
+    if (document.getElementsByTagName("body")[0].getAttribute("class") === "resultspage") {
+        // button that returns distance and travel time on click
+        $("#travel-time").on("click", function(event) {
+            getTravelTime(startLatLong, endLatLong);
+        })
 
-    // button that returns directions on click
-    $("#get-directions").on("click", function() {
-        getDirections();
-    });
+        // button that returns directions on click
+        $("#get-directions").on("click", function() {
+            getDirections();
+        });
 
-    // button to embed map
-    $("#embed-map").on("click", function() {
-        embedMap();
-    });
+        // button to embed map
+        $("#embed-map").on("click", function() {
+            embedMap();
+        });
 
-    // button that gives a satellite photo view
-    $("#end-address-photo").on("click", function() {
-        satelliteViewEmbed(endLatLong);
-    })
+        // button that gives a satellite photo view
+        $("#end-address-photo").on("click", function() {
+            satelliteViewEmbed(endLatLong);
+        })
+    }
 
     $("#hikechoice1").on("click", function() {
         localStorage.setItem("hikechoice", 1);
@@ -321,11 +324,13 @@ function populateWaypointsArray() {
     // use conditional logic to put them in order.
     var waypointsArray = [];
     var hikeChoice = localStorage.getItem("hikechoice");
-    var hikeLatLong = JSON.parse(localStorage.getItem("hikeLocation" + hikeChoice))
+    var hikeLatLong = JSON.parse(localStorage.getItem("hikeLocation" + hikeChoice));
     console.log(hikeLatLong);
     var restaurantChoice = localStorage.getItem("restaurantchoice");
-    var restaurantLatLong = JSON.parse(localStorage.getItem("restaurantLocation" + hikeChoice));
+    var restaurantLatLong = JSON.parse(localStorage.getItem("restaurantLocation" + restaurantChoice));
 
+    waypointsArray.push(hikeLatLong);
+    waypointsArray.push(restaurantLatLong);
     return waypointsArray;
     // CODE FOR LOGIC USED IF ONLY GOING TO ONE OR THE OTHER, OR OUT OF ORDER
     // if (goingOnHike && goingToRestaurant) {
@@ -363,6 +368,7 @@ function addWaypointsToQueryURL(queryURL) {
     }
     // After each waypoint is added as a parameter, remove it from the array. Finish when there are no waypoints left to add.
     while (waypointsArray.length > 0) {
+        
         if (waypointsArray.length === 1) {
             queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
             waypointsArray.shift();

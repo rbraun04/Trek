@@ -25,11 +25,15 @@ function main() {
     // only need to do these for the address pages
     getStartAddress();
     getEndAddress();
-    // only get these next 3 for the final page
-    getHikeAddress();
-    getRestaurantAddress();
-    getStoredLatLong();
-    // only need certain buttons
+
+    // If on last page:
+    if (document.getElementsByTagName("body")[0].getAttribute("class") === "resultspage") {
+        getHikeAddress();
+        getRestaurantAddress();
+        getStoredLatLong();
+        console.log("retrieved")
+    }
+
     addLocationButtonEventListeners();
 
     if (goingOnHike === false && goingToRestaurant === false && endLatLong === null) {
@@ -112,7 +116,8 @@ function getStoredLatLong() {
     endLatLong = JSON.parse(localStorage.getItem("endLatLong"));
 }
 
-/** adds event listeners to the address submittal buttons, as well as the get travel time button */
+
+/** adds event listeners to the various buttons. TODO: only load certain listeners for particular pages.*/
 function addLocationButtonEventListeners() {
     // Upon button click, store new address. Set query url to the address. Make the ajax call for that address.
     $("#submitaddress").on("click", function(event) {
@@ -151,7 +156,7 @@ function addLocationButtonEventListeners() {
         geocodeAddressUrl(queryURL);
     });
 
-    // If on last page
+    // If on last page add these even listeners:
     if (document.getElementsByTagName("body")[0].getAttribute("class") === "resultspage") {
         // button that returns distance and travel time on click
         $("#travel-time").on("click", function(event) {
@@ -174,6 +179,7 @@ function addLocationButtonEventListeners() {
         })
     }
 
+    // Hike and restaurant choice event listeners. Hike listeners also bring user to next page.
     $("#hikeselection1").on("click", function() {
         localStorage.setItem("hikechoice", 1);
         location.href="TrekStartYelpQuestions.html";
@@ -203,7 +209,7 @@ function addLocationButtonEventListeners() {
 }
 
 
-/** Removes spaces from a string and replaces them with "%20" for use in urls */
+/** Removes spaces from a string and replaces them with "%20" for use in Google URLs */
 function removeSpaces(str) {
     if (str === null) {
         return;
@@ -256,7 +262,8 @@ function geocodeAddressUrl(queryURL) {
 
 
 
-/** After both start and end addresses have been submitted, can calculate the distance and travel time between them. */
+/** After both start and end addresses have been submitted, can calculate the distance and travel time between them.
+ * Unused in current iteration of program. */
 function getTravelTime(startLatLong, endLatLong) {
 
     var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + startLatLong.latitude + "%2C" + startLatLong.longitude + "&destinations=" + endLatLong.latitude + "%2C" + endLatLong.longitude;
@@ -280,7 +287,7 @@ function getTravelTime(startLatLong, endLatLong) {
 }
 
 
-/** Prints out verbal directions from a start to an end point. Directions are appended onto a div with id='directions' */
+/** Prints out verbal directions from a start to an end point. Directions are appended onto a div with id='directions'. Unused in current program iteration. */
 function getDirections() {
     // This function can only be called once per page:
     if (directionsListPopulated) {
@@ -320,6 +327,7 @@ function getDirections() {
         }
     });
 }
+
 
 /** Create an empty array to hold all waypoints, and the final destination, in order. Starting address not included. */
 function populateWaypointsArray() {
@@ -365,6 +373,7 @@ function populateWaypointsArray() {
 }
 
 
+/** Build a custom query URL for use in the embed maps Google service. */
 function addWaypointsToQueryURL(queryURL) {
     // First, populate an array with the waypoints in order.
     var waypointsArray = populateWaypointsArray();
@@ -418,9 +427,9 @@ function embedMap() {
 }
 
 
-/** Given an object with latitude and longitude, embed a satellite view of the coordinates. */
+/** Given an object with latitude and longitude, embed a satellite view of the coordinates. Unused in current iteration. */
 function satelliteViewEmbed(place) {
-    // Notes: dont' use heroku CORS fixer in the queryURL.
+    // Note: dont' use heroku CORS fixer in the queryURL.
     var mode = "view";
 
     // First, put the API key and starting location into the queryURL.
@@ -434,14 +443,14 @@ function satelliteViewEmbed(place) {
 
 
 // TODO:
-/* 
-only get variables from local storage on results page
-check on hike and restaurant waypoints
+/*
+Add loading spinners to submit buttons (need to wait for ajax calls before next page loads)
 if no waypoints, then tell user they must select a waypoint (with a modal?)
-improve embed map
 add satellite photos service? - "view" mode for embed, with parameter "center"
 animate directions droplist
 display travel time somewhere?
-organize geocodeAddressUrl()
+clear button for addrss form?
 general organization
+Customize event listeners per page
+account for edge cases of no stored addresses (although this should never be properly reached)
 */

@@ -84,26 +84,32 @@
     
     // $("#submitfinaladdress").on("click", function() {
   // get input from textbox --> category variable
+var displayValuePrice;
+
 function selectOption() {
         var selectMenu = document.getElementById("pricing");
-        var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
+        displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
         console.log(displayValuePrice);
     }
 
+var queryURL;
 function inputValue(){
+
+    // categories are limited by allowed Yelp Categories: https://www.yelp.com/developers/documentation/v3/all_category_list
+    var category = document.getElementById("input").value
+
+    console.log(category);
+
+
+    var address = "Gardena";
+
+    queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=30&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
+
 }
-        var category = document.getElementById("input").value
-
-        console.log(category);
-
-
- var address = "Gardena";
-
-    var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
-  
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=34.0610816&longitude=-118.422122&locale=it_IT&categories=" + category + "&term=restaurant";
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=" + latitude + "&longitude=" + longitude + "&locale=it_IT&categories=" + category + "&term=restaurant";
 function runMe() { 
+  console.log(queryURL)
   $.ajax({
     url: queryURL,
     method: "GET",
@@ -117,16 +123,31 @@ function runMe() {
     var busres3 = response.businesses[2];
     console.log(response.businesses.length)
     var priceFilter = [];
+    var addedBusinesses = [];   // Keeping track of businesses already added to price filter array
     for (var i = 0; i < response.businesses.length; i++) {
-      if (response.businesses[i].price === "$") {
+      if (response.businesses[i].price === "$" && displayValuePrice === "$") {
         priceFilter.push(response.businesses[i]);
-        console.log(priceFilter);
+        addedBusinesses.push(i);
       }
-      else if (response.businesses[i].price === "$$") {
+      else if (response.businesses[i].price === "$$" && displayValuePrice === "$$") {
           priceFilter.push(response.businesses[i]);
-          console.log(priceFilter);
+          addedBusinesses.push(i);
+      }
+      else if (response.businesses[i].price === "$$$" && displayValuePrice === "$$$"){
+        priceFilter.push(response.businesses[i]);
+        addedBusinesses.push(i);
       }
     }
+    // if less then 3 results are in the price filter array, fill it out with less expensive options
+    var j = 0;
+    while (priceFilter.length < 3) {
+      while (addedBusinesses.includes(j)) {
+        j++;
+      }
+      priceFilter.push(response.businesses[j]);
+      j++;
+    }
+
     localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
     var latitude = response.businesses[0].coordinates.latitude;
     var longitude = response.businesses[0].coordinates.longitude;
@@ -159,7 +180,10 @@ function runMe() {
   })
 };
 
-$("#submityelpquestion").on("click", runMe);
+$("#submityelpquestion").on("click", function() {
+  inputValue();
+  runMe();
+});
 
 
 </script>

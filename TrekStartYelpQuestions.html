@@ -159,11 +159,13 @@ submitBtn.addEventListener("click", function() {
             console.log(response.businesses[i].price);
             console.log(response.businesses[i]);
 
+            localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
+
+            location.href="TrekYelpResult.html";
+
 }
 
-        localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
-
-        var latitude = response.businesses[0].coordinates.latitude;
+             var latitude = response.businesses[0].coordinates.latitude;
 
         var longitude = response.businesses[0].coordinates.longitude;
         

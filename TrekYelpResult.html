@@ -100,9 +100,10 @@
         
         $("#ratebox1").append("Rating: " + rating +" stars");
         
-        var image = makeObject[0].image_url;
+        var image1 = makeObject[0].image_url;
 
-        $("#box1").prepend("<img src="+ image + ">");
+        //$("#box1").prepend("<img src="+ image + "class='foodpics' width='100px' height='100px'>");
+        $('#box1').prepend(`<img src="${image1}" class="foodpics" /> `)
 
     // Option 2
         var name = makeObject[1].name;
@@ -113,10 +114,10 @@
 
         $("#ratebox2").append("Rating: " + rating +" stars");
         
-        var image = makeObject[1].image_url;
+        var image2 = makeObject[1].image_url;
 
-        $("#box2").prepend("<img src="+ image + ">");
-        
+        // $("#box2").prepend("<img src="+ image + "class='foodpics' width='px' height='200px'>");
+        $('#box2').prepend(`<img src="${image2}" class="foodpics" /> `)
     // Option 3
         var name = makeObject[2].name;
 
@@ -126,10 +127,10 @@
 
         $("#ratebox3").append("Rating: " + rating +" stars");
         
-        var image = makeObject[2].image_url;
+        var image3 = makeObject[2].image_url;
 
-        $("#box3").prepend("<img src="+ image + ">");
-
+        // $("#box3").prepend("<img src="+ image + "class='foodpics' width='300px' height='200px'>");
+        $('#box3').prepend(`<img src="${image3}" class="foodpics" /> `)
     </script>
 </body>
 </html>

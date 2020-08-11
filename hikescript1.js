@@ -39,8 +39,8 @@ if (hikeImage3 !== null) {
 function APICall(){
 
 var inputDistance = $("#distance").val()
-var inputLat = 40.0274 
-var inputLon = -105.2519
+var inputLat = 33.8 
+var inputLon = -118.309
 var maxDistance =  "&maxDistance=" + inputDistance
 var hikeLatLong = "lat=" + inputLat + "&" + "lon=" + inputLon
 var queryURL = api + hikeLatLong + maxDistance + apiKey

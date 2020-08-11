@@ -16,20 +16,7 @@ var maxDistance =  "&maxDistance=" + inputDistance
 var hikeLatLong = "lat=" + inputLat + "&" + "lon=" + inputLon
 var queryURL = api + hikeLatLong + maxDistance + apiKey
 
-var hikeOption1 = document.getElementById("#hikeoption1")
-var hikeOption2 = document.getElementById("#hikeoption2")
-var hikeOption3 = document.getElementById("#hikeoption3")
-var hikeImage1 = document.getElementById("#hikeoption1")
-var hikeImage2 = document.getElementById("#hikeoption2")
-var hikeImage3 = document.getElementById("#hikeoption3")
 
-hikeOption1 = response.trails[0].difficulty
-hikeOption2 = response.trails[1].difficulty
-hikeOption3 = response.trails[2].difficulty
-
-hikeImage1= response.trails[0].url
-hikeImage2 = response.trails[1].url
-hikeImage3 = response.trails[2].url
 
 
 console.log(queryURL)
@@ -55,6 +42,21 @@ $("#hikeMap").val(URL);
 // var latLongObj1 = {
 //     inputLat1, inputLat2, inputLat3,
 //     inputLong1, inputLong2, inputLong3,
+var hikeOption1 = document.getElementById("#hikeoption1")
+var hikeOption2 = document.getElementById("#hikeoption2")
+var hikeOption3 = document.getElementById("#hikeoption3")
+var hikeImage1 = document.getElementById("#hikeoption1")
+var hikeImage2 = document.getElementById("#hikeoption2")
+var hikeImage3 = document.getElementById("#hikeoption3")
+
+hikeOption1 = response.trails[0].difficulty
+hikeOption2 = response.trails[1].difficulty
+hikeOption3 = response.trails[2].difficulty
+
+hikeImage1= response.trails[0].summary
+hikeImage2 = response.trails[1].summary
+hikeImage3 = response.trails[2].summary
+
 var latitude = response.trails[0].latitude
 var longitude = response.trails[0].longitude
 var latLongObj1 = {

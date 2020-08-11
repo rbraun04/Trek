@@ -175,15 +175,15 @@ function addLocationButtonEventListeners() {
     }
 
     $("#hikechoice1").on("click", function() {
-        localStorage.setItem("hikeselection", 1);
+        localStorage.setItem("hikeselection1", 1);
     });
 
     $("#hikechoice2").on("click", function() {
-        localStorage.setItem("hikeselection", 2);
+        localStorage.setItem("hikeselection2", 2);
     });
 
     $("#hikechoice3").on("click", function() {
-        localStorage.setItem("hikeselection", 3);
+        localStorage.setItem("hikeselection3", 3);
     });
 
     $("#restaurantchoice1").on("click", function() {

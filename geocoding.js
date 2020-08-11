@@ -356,6 +356,11 @@ function populateWaypointsArray() {
     if (endLatLong !== null) {
         waypointsArray.push(endLatLong);
     }
+    for (let i = 0, j = waypointsArray.length; i < j; i++) {
+        if (waypointsArray[i] === null) {
+            waypointsArray.splice(i, 1);
+        }
+    }
     return waypointsArray;
 }
 

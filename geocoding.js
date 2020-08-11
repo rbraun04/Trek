@@ -174,16 +174,16 @@ function addLocationButtonEventListeners() {
         })
     }
 
-    $("#hikechoice1").on("click", function() {
-        localStorage.setItem("hikeselection1", 1);
+    $("#hikeselection1").on("click", function() {
+        localStorage.setItem("hikechoice", 1);
     });
 
-    $("#hikechoice2").on("click", function() {
-        localStorage.setItem("hikeselection2", 2);
+    $("#hikeselection2").on("click", function() {
+        localStorage.setItem("hikechoice", 2);
     });
 
-    $("#hikechoice3").on("click", function() {
-        localStorage.setItem("hikeselection3", 3);
+    $("#hikeselection3").on("click", function() {
+        localStorage.setItem("hikechoice", 3);
     });
 
     $("#restaurantchoice1").on("click", function() {
@@ -368,7 +368,7 @@ function addWaypointsToQueryURL(queryURL) {
     }
     // After each waypoint is added as a parameter, remove it from the array. Finish when there are no waypoints left to add.
     while (waypointsArray.length > 0) {
-
+        
         if (waypointsArray.length === 1) {
             queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
             waypointsArray.shift();

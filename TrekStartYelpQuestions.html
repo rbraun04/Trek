@@ -86,12 +86,36 @@
     var address = "Gardena";
 
     var category = document.getElementById("input").value;
-
-    var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
+    
   
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=34.0610816&longitude=-118.422122&locale=it_IT&categories=" + category + "&term=restaurant";
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=" + latitude + "&longitude=" + longitude + "&locale=it_IT&categories=" + category + "&term=restaurant";
+        function selectOption() {
+
+            var selectMenu = document.getElementById("pricing");
+
+            var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
+
+            console.log(displayValuePrice);
+
+            // localStorage.getItem()
+
+        }
+
+
+
+var submitBtn = document.getElementById("yelpSubmit");
+
+submitBtn.addEventListener("click", function() {
     
+    var selectMenu = document.getElementById("pricing");
+
+    var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
+
+    var category = document.getElementById("input").value;
+
+    var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=3&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
+
     $.ajax({
         url: queryURL,
         method: "GET",
@@ -105,58 +129,52 @@
         var busres2 = response.businesses[1];
         var busres3 = response.businesses[2];
 
-        function selectOption() {
+        console.log(response.businesses.length);
+        
+        console.log(queryURL);
+        var priceFilter = []
+        for (var i = 0; i < response.businesses.length; i++) {
+            
+            console.log(i);
 
-            var selectMenu = document.getElementById("pricing");
+            if (response.businesses[i].price === "$") {
 
-            var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
-
-            console.log(displayValuePrice);
-
-        }
-
-
-          for (var i = 0; i < response.businesses.length; i++) {
-
-              var priceFilter = [];
-
-              if (response.businesses[i].price === "$") {
-
-                  priceFilter.push(response.businesses[i]);
-
-                }
-              
-            //   else if (response.businesses[i].price === "$$") {
-
-            //       priceFilter.push(response.businesses[i]);
-
-            //     }
-
-            //   else {
-
-            //       priceFilter.push(response.businesses[i]);
-
-            //     }
+                priceFilter.push(response.businesses[i]);
 
             }
 
-            // assign value to option chosen on pulldown menu
+            else if (response.businesses[i].price === "$$") {
+
+                priceFilter.push(response.businesses[i]);
+
+            }
+
+            else {
+
+                priceFilter.push(response.businesses[i]);
+
+            }
+            console.log(response);
+            console.log(priceFilter);
+            console.log(response.businesses[i].price);
+            console.log(response.businesses[i]);
+
+}
+
+        localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
+
+        
+      })
+    
+    // assign value to option chosen on pulldown menu
         
     // create variable for submit button
-        var submitBtn = document.getElementById("yelpSubmit");
-
-    // create function for clicking submit button
-        submitBtn.addEventListener("click", function() {
+    
             
-            var selectMenu = document.getElementById("pricing");
+    // console.log(priceFilter);
 
-            var displayValuePrice = selectMenu.options[selectMenu.selectedIndex].value;
-
-            localStorage.setItem("Price range", JSON.stringify(displayValuePrice));
     
-            localStorage.setItem("Restaurants", JSON.stringify(priceFilter));
-    
-        })
+    // create function for clicking submit button
 
         // //   console.log(response);
         // console.log(response);

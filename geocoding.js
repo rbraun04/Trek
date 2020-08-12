@@ -37,7 +37,7 @@ function main() {
     addLocationButtonEventListeners();
 
     if (goingOnHike === false && goingToRestaurant === false && endLatLong === null) {
-        ;  // should code for this case
+        ;  // this case should never occur in current iteration of app
     }
 
     // render the embedded map, but only if the iframe is present
@@ -47,6 +47,7 @@ function main() {
 }
 
 $(document).ready(main);
+
 
 /** Get previously entered start address from local storage. Fills out the values of the address form. */
 function getStartAddress() {
@@ -73,6 +74,7 @@ function getStartAddress() {
     $("#state").val(state);
 }
 
+
 /** Get end location address from storage. Fills out the end address form. */
 function getEndAddress() {
     var storedEndAddress = localStorage.getItem("endAddressObj");
@@ -94,6 +96,7 @@ function getEndAddress() {
     $("#end-state").val(storedEndAddress.state);
 }
 
+
 /** Retrieves the address of a hike from storage. */
 function getHikeAddress() {
     hikeLatLong = JSON.parse(localStorage.getItem("hikeAddress"));
@@ -101,6 +104,7 @@ function getHikeAddress() {
         goingOnHike = false;
     }
 }
+
 
 /** Retrieves the restaurant address from storage. */
 function getRestaurantAddress() {
@@ -110,7 +114,9 @@ function getRestaurantAddress() {
     }
 }
 
-/** retrieves latitudes and longitudes of the start and end addresses from storage. These will be null if nothing is in storage. */
+
+/** retrieves latitudes and longitudes of the start and end addresses from storage. 
+ * These will be null if nothing is in storage. Null values are handled in populateWaypointsArray() */
 function getStoredLatLong() {
     startLatLong = JSON.parse(localStorage.getItem("startLatLong"));
     endLatLong = JSON.parse(localStorage.getItem("endLatLong"));
@@ -120,6 +126,7 @@ function getStoredLatLong() {
 /** adds event listeners to the various buttons. TODO: only load certain listeners for particular pages.*/
 function addLocationButtonEventListeners() {
     // Upon button click, store new address. Set query url to the address. Make the ajax call for that address.
+    // geocodeAddressUrl() also loads the next page.
     $("#submitaddress").on("click", function(event) {
         event.preventDefault()
         address = $("#address").val();
@@ -132,8 +139,10 @@ function addLocationButtonEventListeners() {
         city = removeSpaces(city);
         state = removeSpaces(state);
 
+        // Heroku CORS app address must be included to get around CORS policy
         var queryURL = "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + city + "," + state + "," + zip + "&key=" + APIKEY;
-        // have to only set startLatLong once the call is actually returned. Instead of doing this true / false flag
+        // startAddress tells geocodeAddressUrl() which address to store in local storage.
+        // In a future iteration, returning the ajax call "return $.ajax", in geocodeAddressUrl(), would offer a more elegant solution.
         startAddress = true;
         geocodeAddressUrl(queryURL);
     });
@@ -156,7 +165,7 @@ function addLocationButtonEventListeners() {
         geocodeAddressUrl(queryURL);
     });
 
-    // If on last page add these even listeners:
+    // If on last page add these event listeners:
     if (document.getElementsByTagName("body")[0].getAttribute("class") === "resultspage") {
         // button that returns distance and travel time on click
         $("#travel-time").on("click", function(event) {
@@ -180,6 +189,7 @@ function addLocationButtonEventListeners() {
     }
 
     // Hike and restaurant choice event listeners. Hike listeners also bring user to next page.
+    // These could be rewritten to be consolidated.
     $("#hikeselection1").on("click", function() {
         localStorage.setItem("hikechoice", 1);
         location.href="TrekStartYelpQuestions.html";
@@ -229,7 +239,7 @@ function removeSpaces(str) {
 // -------------------------
 
 /** Converts an address to latitude/longitude using ajax call to geocoding service.
- * Then stores the latitude/longitude in local storage. */
+ * Then stores the latitude/longitude in local storage. Loads the next page. */
 function geocodeAddressUrl(queryURL) {
     console.log(queryURL)
     $.ajax({
@@ -246,6 +256,8 @@ function geocodeAddressUrl(queryURL) {
             longitude
         }
 
+        // after successful response, store the latitude and longitude in local storage. Then load the next page.
+        // This could be improved by instead returning the promised ajax call, "return $.ajax", then using ".then" to load next page.
         if (startAddress) {
             startLatLong = latLongObj;
             localStorage.setItem("startLatLong", JSON.stringify(startLatLong));
@@ -261,6 +273,117 @@ function geocodeAddressUrl(queryURL) {
 }
 
 
+/** Given starting and ending coordinates, embeds a map of directions in an iframe with id='rendered-map' */
+function embedMap() {
+    // Notes: dont' use heroku CORS fixer in the queryURL.
+    // general request format is: https://www.google.com/maps/embed/v1/MODE?key=YOUR_API_KEY&parameters
+    // mode is set to 'directions' here, but can be place, search, view, direction, or streetview
+    var mode = "directions";
+
+    // First, put the API key and starting location into the queryURL.
+    var queryURL = "https://www.google.com/maps/embed/v1/" + mode + "?key=" + APIKEY;
+    queryURL += "&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude;
+    // Next, add the waypoints to the URL.
+    queryURL = addWaypointsToQueryURL(queryURL);
+
+    // Finally, embed the map.
+    $("#journeyrendered-map").attr("src", queryURL);
+}
+
+
+/** Build a custom query URL for use in the embed maps Google service. */
+function addWaypointsToQueryURL(queryURL) {
+    // First, populate an array with the waypoints in order.
+    var waypointsArray = populateWaypointsArray();
+    console.log(waypointsArray);
+    // Then, add each waypoint to the queryURL, in order. Should have at least one waypoint.
+    if (waypointsArray.length === 0) {
+        console.log("no endpoints set!");
+    }
+    if (waypointsArray.length > 1) {
+        queryURL += "&waypoints=";
+    }
+    // After each waypoint is added as a parameter, remove it from the array. Finish when there are no waypoints left to add.
+    while (waypointsArray.length > 0) {
+        // null values were removed in populateWaypointsArray(), so dealing with them here should be unnecessary.
+        // if (waypointsArray[0] === null) {
+        //     waypointsArray.shift();
+        //     continue;
+        // }
+
+        // If length of waypointsArray is one, add on as a destination instead of a waypoint.
+        if (waypointsArray.length === 1) {
+            queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
+            waypointsArray.shift();
+        }
+        // If length of waypointsArray is greater than 1, add waypoint to queryURL.
+        if (waypointsArray.length > 1) {
+            queryURL += waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
+            waypointsArray.shift();
+            // A "|" character is required in between waypoints. Add only if additional waypoints are present.
+            if (waypointsArray.length > 1) {
+                queryURL += "|";
+            }
+        }
+    }
+    console.log(queryURL);
+    return queryURL;
+}
+
+
+/** Create an empty array to hold all waypoints, and the final destination, in order.
+ * Starting address not included in array, since starting address is always set. */
+function populateWaypointsArray() {
+    // Create an empty array. Get the addresses of the hike and restaurant from local storage.
+    var waypointsArray = [];
+    var hikeChoice = localStorage.getItem("hikechoice");
+    var hikeLatLong = JSON.parse(localStorage.getItem("hikeLocation" + hikeChoice));
+    console.log(hikeLatLong);
+    var restaurantChoice = localStorage.getItem("restaurantchoice");
+    var restaurantLatLong = JSON.parse(localStorage.getItem("restaurantLocation" + restaurantChoice));
+
+    // Push addresses into array.
+    waypointsArray.push(hikeLatLong);
+    waypointsArray.push(restaurantLatLong);
+
+    // CODE FOR LOGIC USED IF ONLY GOING TO ONE OR THE OTHER, OR OUT OF ORDER
+    // ------------------------------------------------------------------------
+    // Since the only possible waypoints are hiking, restaurant, and a final destination,
+    // use conditional logic to put them in order.
+    // if (goingOnHike && goingToRestaurant) {
+    //     if (hikeFirst) {
+    //         waypointsArray.push(hikeLatLong);
+    //         waypointsArray.push(restaurantLatLong);
+    //     }
+    //     else {
+    //         waypointsArray.push(restaurantLatLong);
+    //         waypointsArray.push(hikeLatLong);
+    //     }
+    // }
+    // else if (goingOnHike) {
+        //     waypointsArray.push(hikeLatLong);
+    // }
+    // else if (goingToRestaurant) {
+        //     waypointsArray.push(restaurantLatLong);
+    // }
+    // ----------------------------------------------------------------------------
+
+    // make sure ending address is valid before pushing to array:
+    if (endLatLong !== null) {
+        waypointsArray.push(endLatLong);
+    }
+    // remove any null addresses from the array
+    for (let i = 0, j = waypointsArray.length; i < j; i++) {
+        if (waypointsArray[i] === null) {
+            waypointsArray.splice(i, 1);
+        }
+    }
+    return waypointsArray;
+}
+
+
+// ADDITIONAL GOOGLE MAPS FUNCTIONALITY UNUSED IN CURRENT PROGRAM ITERATION
+// ------------------------------------------------------------------------
 
 /** After both start and end addresses have been submitted, can calculate the distance and travel time between them.
  * Unused in current iteration of program. */
@@ -287,7 +410,8 @@ function getTravelTime(startLatLong, endLatLong) {
 }
 
 
-/** Prints out verbal directions from a start to an end point. Directions are appended onto a div with id='directions'. Unused in current program iteration. */
+/** Prints out verbal directions from a start to an end point. Directions are appended onto a div with id='directions'.
+ * Unused in current program iteration. */
 function getDirections() {
     // This function can only be called once per page:
     if (directionsListPopulated) {
@@ -328,105 +452,6 @@ function getDirections() {
     });
 }
 
-
-/** Create an empty array to hold all waypoints, and the final destination, in order. Starting address not included. */
-function populateWaypointsArray() {
-    // Since the only possible waypoints are hiking, restaurant, and a final destination, 
-    // use conditional logic to put them in order.
-    var waypointsArray = [];
-    var hikeChoice = localStorage.getItem("hikechoice");
-    var hikeLatLong = JSON.parse(localStorage.getItem("hikeLocation" + hikeChoice));
-    console.log(hikeLatLong);
-    var restaurantChoice = localStorage.getItem("restaurantchoice");
-    var restaurantLatLong = JSON.parse(localStorage.getItem("restaurantLocation" + restaurantChoice));
-
-
-    waypointsArray.push(hikeLatLong);
-    waypointsArray.push(restaurantLatLong);
-
-    // CODE FOR LOGIC USED IF ONLY GOING TO ONE OR THE OTHER, OR OUT OF ORDER
-    // if (goingOnHike && goingToRestaurant) {
-    //     if (hikeFirst) {
-    //         waypointsArray.push(hikeLatLong);
-    //         waypointsArray.push(restaurantLatLong);
-    //     }
-    //     else {
-    //         waypointsArray.push(restaurantLatLong);
-    //         waypointsArray.push(hikeLatLong);
-    //     }
-    // }
-    // else if (goingOnHike) {
-        //     waypointsArray.push(hikeLatLong);
-    // }
-    // else if (goingToRestaurant) {
-        //     waypointsArray.push(restaurantLatLong);
-    // }
-    if (endLatLong !== null) {
-        waypointsArray.push(endLatLong);
-    }
-    for (let i = 0, j = waypointsArray.length; i < j; i++) {
-        if (waypointsArray[i] === null) {
-            waypointsArray.splice(i, 1);
-        }
-    }
-    return waypointsArray;
-}
-
-
-/** Build a custom query URL for use in the embed maps Google service. */
-function addWaypointsToQueryURL(queryURL) {
-    // First, populate an array with the waypoints in order.
-    var waypointsArray = populateWaypointsArray();
-    console.log(waypointsArray)
-    // Then, add each waypoint to the queryURL, in order. Should have at least one waypoint.
-    if (waypointsArray.length === 0) {
-        console.log("no endpoints set!");
-    }
-    if (waypointsArray.length > 1) {
-        queryURL += "&waypoints=";
-    }
-    // After each waypoint is added as a parameter, remove it from the array. Finish when there are no waypoints left to add.
-    while (waypointsArray.length > 0) {
-        // if (waypointsArray[0] === null) {
-        //     waypointsArray.shift();
-        //     continue;
-        // }
-        
-        if (waypointsArray.length === 1) {
-            queryURL += "&destination=" + waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
-            waypointsArray.shift();
-        }
-        if (waypointsArray.length > 1) {
-            queryURL += waypointsArray[0].latitude + "%2C" + waypointsArray[0].longitude;
-            waypointsArray.shift();
-            if (waypointsArray.length > 1) {
-                queryURL += "|";
-            }
-        }
-    }
-    console.log(queryURL)
-    return queryURL;
-}
-
-
-/** Given starting and ending coordinates, embeds a map of directions in an iframe with id='rendered-map' */
-function embedMap() {
-    // Notes: dont' use heroku CORS fixer in the queryURL.
-    // general request format is: https://www.google.com/maps/embed/v1/MODE?key=YOUR_API_KEY&parameters
-    // mode is set to 'directions' here, but can be place, search, view, direction, or streetview
-    var mode = "directions";
-
-    // First, put the API key and starting location into the queryURL.
-    var queryURL = "https://www.google.com/maps/embed/v1/" + mode + "?key=" + APIKEY;
-    queryURL += "&origin=" + startLatLong.latitude + "%2C" + startLatLong.longitude;
-    // Next, add the waypoints to the URL.
-    queryURL = addWaypointsToQueryURL(queryURL);
-
-    // Finally, embed the map.
-    $("#journeyrendered-map").attr("src", queryURL);
-}
-
-
 /** Given an object with latitude and longitude, embed a satellite view of the coordinates. Unused in current iteration. */
 function satelliteViewEmbed(place) {
     // Note: dont' use heroku CORS fixer in the queryURL.
@@ -443,6 +468,7 @@ function satelliteViewEmbed(place) {
 
 
 // TODO:
+//--------------
 /*
 Add loading spinners to submit buttons (need to wait for ajax calls before next page loads)
 if no waypoints, then tell user they must select a waypoint (with a modal?)

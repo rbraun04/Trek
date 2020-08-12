@@ -101,9 +101,13 @@ function inputValue(){
     console.log(category);
 
 
-    var address = "Gardena";
-
-    queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=30&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
+    // var address = "Gardena";
+    var startLatLong = JSON.parse(localStorage.getItem("startLatLong"));
+    var latitude = startLatLong.latitude;
+    var longitude = startLatLong.longitude;
+    // TODO: add in a search radius as well.
+    queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=30&latitude=" + latitude + "&longitude=" + longitude + "&locale=it_IT&categories=" + category + "&term=restaurant";
+    // queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=30&location=" + address + "&locale=it_IT&categories=" + category + "&term=restaurant";
 
 }
 //     // var queryURL = "https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?limit=10&latitude=34.0610816&longitude=-118.422122&locale=it_IT&categories=" + category + "&term=restaurant";
